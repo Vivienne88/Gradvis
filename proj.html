@@ -37,6 +37,10 @@
 						GRE : <span id="GRE_value">No Filter</span>
 						<input type="range" min="0" max="1" value="0" class="slider" id="myGRE">
 					</div>
+					<div>
+						Rank : <span id="Rank_value">No Filter</span>
+						<input type="range" min="0" max="50" value="0" class="slider" id="myRank">
+					</div>
 					<h6>Attributes</h6>
 					<div>
 						<label class="checkbox-inline">
@@ -86,6 +90,36 @@
 							Phd Applicants
 						</label>	
 					</div>
+					<div>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="Artificial intelligence" name="attributes" value="ai" checked="true">
+							Artificial intelligence
+						</label>							
+					</div>
+					<div>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="Machine learning & data mining" name="attributes" value="mlmining" checked="true">
+							Machine learning & data mining
+						</label>	
+					</div>
+					<div>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="Theory" name="attributes" value="act" checked="true">
+							Theory
+						</label>	
+					</div>
+					<div>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="Databases" name="attributes" value="mod" checked="true">
+							Databases
+						</label>							
+					</div>
+					<div>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="Visualization" name="attributes" value="visualization" checked="true">
+							Visualization
+						</label>	
+					</div>
 					<h6>Sort</h6>
 					<label class="checkbox-inline">
 						<input type="checkbox" id="sort">	
@@ -112,17 +146,18 @@
 		GRE_slider = document.getElementById("myGRE")
 		GRE_ouput = document.getElementById("GRE_value")
 
+		Rank_slider = document.getElementById("myRank")
+		Rank_ouput = document.getElementById("Rank_value")
+
 		attributes = document.querySelectorAll('input[name=attributes]')
 
 		d3.csv("uni3.csv").then(d => chart(d))
 
 		function chart(csv) {
-			//var keys = csv.columns.slice(5);
-			//var keys = ["Students", "Tuition($)", "Score"]
-			var keys = ['Students Score', 'Tuition($) Score', 'Score', 'Student/Faculty Ratio Score',
-        'Master Acceptance Score', 'Master Applicants Score',
-        'Phd Acceptance Score', 'Phd Applicants Score']
-	
+			var keys = ['Students Score', 'Tuition($) Score', 'Score', 'Student/Faculty Ratio Score', 'Master Acceptance Score'
+			, 'Master Applicants Score', 'Phd Acceptance Score', 'Phd Applicants Score', 'ai Score', 'mlmining Score'
+			, 'act Score', 'mod Score', 'visualization Score']
+			
 			//var year   = [...new Set(csv.map(d => d.Year))]
 			var names = [...new Set(csv.map(d => d.Name))]
 
@@ -159,9 +194,9 @@
 			// 	.range(["steelblue", "darkorange", "lightblue"])
 			// 	.domain(keys);
 
-			update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 0)
+			update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 0)
 
-			function update(GPA, TOEFL, GRE, speed) {
+			function update(GPA, TOEFL, GRE, rank, speed) {
 				var checkedBoxes = document.querySelectorAll('input[name=attributes]:checked');
 				
 				keys = []
@@ -176,10 +211,14 @@
 				GPA = GPA / 10
 				var data = null
 
-				if(GRE == 0){
+				if(GRE == 0 && rank == 0){
 					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL)
-				} else {
+				} else if (GRE == 0 && rank != 0) {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.Rank <= rank)
+				} else if (GRE != 0 && rank == 0) {
 					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required")
+				} else {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required" && f.Rank <= rank)
 				}
 					
 				console.log(data)
@@ -188,8 +227,10 @@
 				data.forEach(function(d) {
 					d["Students"] = d["Students"].replace(',', '')
 					d["Tuition($)"] = d["Tuition($)"].replace(',', '')
+					d["Rank"] = +d["Rank"]
 					d["GPA"] = +d["GPA"]
 					d["TOEFL"] = +d["TOEFL"]
+
 					d["Students Score"] = Math.trunc(+d["Students Score"])
 					d["Tuition($) Score"] = Math.trunc(+d["Tuition($) Score"])
 					d["Student/Faculty Ratio Score"] = Math.trunc(+d["Student/Faculty Ratio Score"])
@@ -197,6 +238,38 @@
 					d["Master Applicants Score"] = Math.trunc(+d["Master Applicants Score"])
 					d["Phd Acceptance Score"] = Math.trunc(+d["Phd Acceptance Score"])
 					d["Phd Applicants Score"] = Math.trunc(+d["Phd Applicants Score"])
+
+					d["act Score"] = Math.trunc(+d["act Score"])
+					d["ai Score"] = Math.trunc(+d["ai Score"])
+					d["arch Score"] = Math.trunc(+d["arch Score"])
+					d["bio Score"] = Math.trunc(+d["bio Score"])
+					d["chi Score"] = Math.trunc(+d["chi Score"])
+
+					d["comm Score"] = Math.trunc(+d["comm Score"])
+					d["crypt Score"] = Math.trunc(+d["crypt Score"])
+					d["da Score"] = Math.trunc(+d["da Score"])
+					d["ecom Score"] = Math.trunc(+d["ecom Score"])
+					d["graph Score"] = Math.trunc(+d["graph Score"])
+
+					d["hpc Score"] = Math.trunc(+d["hpc Score"])
+					d["ir Score"] = Math.trunc(+d["ir Score"])
+					d["log Score"] = Math.trunc(+d["log Score"])
+					d["metrics Score"] = Math.trunc(+d["metrics Score"])
+					d["mlmining Score"] = Math.trunc(+d["mlmining Score"])
+
+					d["mobile Score"] = Math.trunc(+d["mobile Score"])
+					d["mod Score"] = Math.trunc(+d["mod Score"])
+					d["nlp Score"] = Math.trunc(+d["nlp Score"])
+					d["ops Score"] = Math.trunc(+d["ops Score"])
+					d["plan Score"] = Math.trunc(+d["plan Score"])
+
+					d["robotics Score"] = Math.trunc(+d["robotics Score"])
+					d["sec Score"] = Math.trunc(+d["sec Score"])
+					d["soft Score"] = Math.trunc(+d["soft Score"])
+					d["vision Score"] = Math.trunc(+d["vision Score"])
+					d["visualization Score"] = Math.trunc(+d["visualization Score"])
+					d["bed Score"] = Math.trunc(+d["bed Score"])
+																
 					d.total = d3.sum(keys, k => +(d[k]))
 					return d
 				})
@@ -262,12 +335,12 @@
 
 			var select = d3.select("#year")
 				.on("change", function() {
-					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750)
+					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 				})
 
 			var checkbox = d3.select("#sort")
 				.on("click", function() {
-					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750)
+					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 				})
 
 			GPA_slider.oninput = function() {
@@ -276,7 +349,7 @@
 				} else {
 					GPA_ouput.innerHTML = this.value / 10;
 				}
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750)
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 			}		
 
 			TOEFL_slider.oninput = function() {
@@ -285,7 +358,7 @@
 				} else {
 					TOEFL_ouput.innerHTML = this.value;
 				}				
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750)
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 			}			
 
 			GRE_slider.oninput = function() {
@@ -294,12 +367,21 @@
 				} else {
 					GRE_ouput.innerHTML = "Required";
 				}
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750)
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 			}			
+
+			Rank_slider.oninput = function() {
+				if(this.value == 0){
+					Rank_ouput.innerHTML = "No Filter";
+				} else {
+					Rank_ouput.innerHTML = "TOP " + this.value;
+				}
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}	
 
 			attributes.forEach(function(DOM){
 				DOM.onchange = function() {
-					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750)
+					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 				}
 			})
 		}
