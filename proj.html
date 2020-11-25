@@ -129,6 +129,9 @@
 				<div class="col-9">
 					<svg id="chart" width="650" height="800"></svg>
 				</div>
+				<div id="bar_pos" style="float:left;">
+					<svg id="barChart" width="650" height="800"></svg>
+				</div>
 			</div>
 		</div>
 
@@ -150,6 +153,24 @@
 		Rank_ouput = document.getElementById("Rank_value")
 
 		attributes = document.querySelectorAll('input[name=attributes]')
+
+		let barChartKey = "Rank";
+		let barChartColor = 'black';
+
+		// layer 변수들 추가
+		let students_score_layer;
+		let tuition_score_layer;
+		let score_layer;
+		let student_faculty_score_layer;
+		let master_acceptance_score_layer;
+		let master_applicants_score_layer;
+		let phd_acceptance_score_layer;
+		let phd_applicants_score_layer;
+		let ai_score_layer; 
+		let mlmining_score_layer;
+		let act_score_layer;
+		let mod_score_layer;
+		let visualization_score_layer;
 
 		d3.csv("uni3.csv").then(d => chart(d))
 
@@ -294,8 +315,25 @@
 				group.exit().remove()
 
 				group.enter().append("g")
+					.attr("id", d => d.key+" layer") // 추가 부분
 					.classed("layer", true)
 					.attr("fill", d => z(d.key));
+
+				// layer 관련 추가 코드
+				students_score_layer = document.getElementById("Students Score layer")
+				tuition_score_layer  = document.getElementById("Tuition($) Score layer")
+				score_layer = document.getElementById("Score layer")
+				student_faculty_score_layer  = document.getElementById("Student/Faculty Ratio Score layer")
+				master_acceptance_score_layer  = document.getElementById("Master Acceptance Score layer")
+				master_applicants_score_layer  = document.getElementById("Master Applicants Score layer")
+				phd_acceptance_score_layer  = document.getElementById("Phd Acceptance Score layer")
+				phd_applicants_score_layer = document.getElementById("Phd Applicants Score layer")
+
+				ai_score_layer = document.getElementById("ai Score layer")
+				mlmining_score_layer = document.getElementById("mlmining Score layer")
+				act_score_layer = document.getElementById("act Score layer")
+				mod_score_layer = document.getElementById("mod Score layer")
+				visualization_score_layer = document.getElementById("visualization Score layer")
 
 				var bars = svg.selectAll("g.layer").selectAll("rect")
 					.data(d => d, e => e.data.Name);
@@ -309,6 +347,20 @@
 					.attr("x", d => x(d.data.Name))
 					.attr("y", d => y(d[1]))
 					.attr("height", d => y(d[0]) - y(d[1]))
+					.attr('stroke', 'black')
+					.attr('stroke-width', '0.1');
+
+				d3.selectAll("rect")
+					.on('mouseover', function() {
+						console.log("mouseover")
+						d3.select(this)
+							//.attr('stroke', '#2378ae')
+							.attr('stroke-width', '3')
+					})
+					.on('mouseleave', function() {
+						d3.select(this)
+							.attr('stroke-width', '0.1')
+					})
 
 				var text = svg.selectAll(".text")
 					.data(data, d => d.Name);
@@ -338,10 +390,9 @@
 					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 				})
 
-			var checkbox = d3.select("#sort")
-				.on("click", function() {
-					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				})
+			let checkbox = document.getElementById('sort').addEventListener("click", function() {
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750);
+			}, false)
 
 			GPA_slider.oninput = function() {
 				if(this.value == 0){
@@ -384,6 +435,237 @@
 					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 				}
 			})
+
+			students_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			tuition_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			student_faculty_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			master_acceptance_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			master_applicants_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			phd_acceptance_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			phd_applicants_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			ai_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			mlmining_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			act_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			mod_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+			visualization_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, barChartColor, 750)
+				//students_score_layer.onclick = null;
+			}
+		}
+
+		d3.csv("uni3.csv").then(d => barChart(d));
+		function barChart(csv) 
+		{
+			csv.forEach(function(d) {
+				d["Students"] = d["Students"].replace(',', '')
+				d["Tuition($)"] = d["Tuition($)"].replace(',', '')
+				d["Rank"] = +d["Rank"]
+				d["GPA"] = +d["GPA"]
+				d["TOEFL"] = +d["TOEFL"]
+
+				d["Students Score"] = Math.trunc(+d["Students Score"])
+				d["Tuition($) Score"] = Math.trunc(+d["Tuition($) Score"])
+				d["Student/Faculty Ratio Score"] = Math.trunc(+d["Student/Faculty Ratio Score"])
+				d["Master Acceptance Score"] = Math.trunc(+d["Master Acceptance Score"])
+				d["Master Applicants Score"] = Math.trunc(+d["Master Applicants Score"])
+				d["Phd Acceptance Score"] = Math.trunc(+d["Phd Acceptance Score"])
+				d["Phd Applicants Score"] = Math.trunc(+d["Phd Applicants Score"])
+
+				d["act Score"] = Math.trunc(+d["act Score"])
+				d["ai Score"] = Math.trunc(+d["ai Score"])
+				d["arch Score"] = Math.trunc(+d["arch Score"])
+				d["bio Score"] = Math.trunc(+d["bio Score"])
+				d["chi Score"] = Math.trunc(+d["chi Score"])
+
+				d["comm Score"] = Math.trunc(+d["comm Score"])
+				d["crypt Score"] = Math.trunc(+d["crypt Score"])
+				d["da Score"] = Math.trunc(+d["da Score"])
+				d["ecom Score"] = Math.trunc(+d["ecom Score"])
+				d["graph Score"] = Math.trunc(+d["graph Score"])
+
+				d["hpc Score"] = Math.trunc(+d["hpc Score"])
+				d["ir Score"] = Math.trunc(+d["ir Score"])
+				d["log Score"] = Math.trunc(+d["log Score"])
+				d["metrics Score"] = Math.trunc(+d["metrics Score"])
+				d["mlmining Score"] = Math.trunc(+d["mlmining Score"])
+
+				d["mobile Score"] = Math.trunc(+d["mobile Score"])
+				d["mod Score"] = Math.trunc(+d["mod Score"])
+				d["nlp Score"] = Math.trunc(+d["nlp Score"])
+				d["ops Score"] = Math.trunc(+d["ops Score"])
+				d["plan Score"] = Math.trunc(+d["plan Score"])
+
+				d["robotics Score"] = Math.trunc(+d["robotics Score"])
+				d["sec Score"] = Math.trunc(+d["sec Score"])
+				d["soft Score"] = Math.trunc(+d["soft Score"])
+				d["vision Score"] = Math.trunc(+d["vision Score"])
+				d["visualization Score"] = Math.trunc(+d["visualization Score"])
+				d["bed Score"] = Math.trunc(+d["bed Score"])
+															
+				return d
+			})
+			let names = [...new Set(csv.map(d => d.Name))] //months
+			
+			let svg = d3.select("#barChart"),
+				margin = {top: 35, left: 80, bottom: 120, right: 0},
+				width = +svg.attr("width") - margin.left - margin.right,
+				height = +svg.attr("height") - margin.top - margin.bottom;
+
+			let x = d3.scaleBand()
+				.range([margin.left, width - margin.right])
+				.padding(0.1)
+			
+			var y = d3.scaleLinear()
+				.rangeRound([height - margin.bottom, margin.top]);
+
+			var xAxis = svg.append("g")
+				.attr("transform", `translate(0,${height - margin.bottom})`)
+				.attr("class", "x-axis")
+
+			var yAxis = svg.append("g")
+				.attr("transform", `translate(${margin.left},0)`)
+				.attr("class", "y-axis")
+			
+
+			update("Rank", "black", 0);
+			function update(key, color, speed) {
+				let data = csv;
+				
+				//y.domain([0, d3.max(data, d => d[key])]).nice() // score 컬럼에서 max가 88이 나옴
+				let max = d3.max(data, d => d[key])
+				if (max == 88) {
+					max = 100
+				}
+				y.domain([0, max]).nice()
+
+				svg.selectAll(".y-axis").transition().duration(speed)
+					.call(d3.axisLeft(y).ticks(null, "s"))
+
+				data.sort(d3.select("#sort").property("checked")
+					? (a, b) => b[key] - a[key]
+					: (a, b) => names.indexOf(a.Name) - names.indexOf(b.Name))
+
+				x.domain(data.map(d => d.Name))
+
+				svg.selectAll(".x-axis").transition().duration(speed)
+					.call(d3.axisBottom(x).tickSizeOuter(0))
+
+				let bar = svg.selectAll(".bar")
+					.data(data, d => d.Name)
+
+				bar.exit().remove();
+				
+				bar.enter().append("rect")
+					.attr("class", "bar")
+					.attr("fill", color)
+					.attr("width", x.bandwidth())
+					.merge(bar)
+				.transition().duration(speed)
+					.attr("x", d => x(d.Name))
+					.attr("y", d => y(d[key]))
+					.attr("height", d => y(0) - y(d[key]))
+					.attr("fill", color)
+
+				xAxis.selectAll("text")	
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-65)");		
+			}
+			barChart.update = update;
+			
+			let checkbox = document.getElementById('sort').addEventListener("click", function() {
+				update(barChartKey, barChartColor, 750);
+			}, false) 
 		}
 		</script>
 	</body>
