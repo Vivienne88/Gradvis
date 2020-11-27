@@ -132,6 +132,8 @@
 				<div id="bar_pos" style="float:left;">
 					<svg id="barChart" width="650" height="800"></svg>
 				</div>
+				<iframe src="http://127.0.0.1:5500/map.html"</iframe>
+				<!--<iframe src="http://127.0.0.1:5500/map_2.html"</iframe>-->
 			</div>
 		</div>
 
@@ -156,6 +158,7 @@
 
 		let barChartKey = "Rank";
 		let barChartColor = 'black';
+		let tmp_color;
 
 		// layer 변수들 추가
 		let students_score_layer;
@@ -318,6 +321,19 @@
 					.attr("id", d => d.key+" layer") // 추가 부분
 					.classed("layer", true)
 					.attr("fill", d => z(d.key));
+				
+				//let tmp_color;
+				d3.selectAll("g.layer")
+					.on('mouseenter', function() {
+						tmp_color = this.getAttribute('fill')
+						d3.select(this)
+							.attr("fill", "black")
+					})
+					.on('mouseleave', function() {
+						d3.select(this)
+							.attr('fill', tmp_color)
+							
+					})
 
 				// layer 관련 추가 코드
 				students_score_layer = document.getElementById("Students Score layer")
@@ -348,7 +364,7 @@
 					.attr("height", d => y(d[0]) - y(d[1]))
 					.attr('stroke', 'black')
 					.attr('stroke-width', '0.1');
-
+/*
 				d3.selectAll("rect")
 					.on('mouseover', function() {
 						console.log("mouseover")
@@ -359,7 +375,7 @@
 						d3.select(this)
 							.attr('stroke-width', '0.1')
 					})
-
+*/
 				var text = svg.selectAll(".text")
 					.data(data, d => d.Name);
 
@@ -410,7 +426,7 @@
 					barChartColor = this.getAttribute('fill')
 					console.log(barChartKey)
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 					//students_score_layer.onclick = null;
 				}
 				tuition_score_layer.onclick = function() {
@@ -418,84 +434,85 @@
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
+					//students_score_layer.onclick = null;
 				}
 				score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				student_faculty_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				master_acceptance_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				master_applicants_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				phd_acceptance_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				phd_applicants_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				ai_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				mlmining_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				act_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				mod_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 				visualization_score_layer.onclick = function() {
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
 					
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, tmp_color, 750)
 				}
 			}
 
