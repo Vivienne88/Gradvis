@@ -24,7 +24,28 @@
 			svg {
 				font: 12px arial;
 			}
-
+		#tooltip {
+			position: absolute;
+        			height: auto;
+			padding:10px;
+			background-color: white;
+			-webkit-border-radius: 10px;
+			-moz-border-radius: 10px;
+			border-radius: 10px;
+			-webkit-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+			-moz-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+			box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+			pointer-events: none;
+		}
+		#tooltip.hidden {
+			display: none;
+		}
+		#tooltip p {
+			margin: 0;
+			font-family: sans-serif;
+			font-size: 16px;
+			line-height: 20px;
+		}
 		</style>
 	</head>
 	<body>
@@ -162,6 +183,9 @@
 					<svg id="barChart" width="700" height="800"></svg>
 					<svg id="mapChart" width="700" height="800"></svg>
 				</div>
+				<div id="spider" style="float:left;">
+					<svg id = "spiderChart" width = "800", height = "387"></svg>
+				</div>
 
 			</div>
 		</div>
@@ -197,6 +221,9 @@
 		let mapChartCircleSize;
 		let tmp_color;
 		let sort_color = 'white';
+
+		// spider chart 용 stack
+		let university_name_stack = new Array;
 
 		// layer 변수들 추가
 		let students_score_layer;
@@ -436,7 +463,51 @@
 					.style("text-anchor", "end")
 					.attr("dx", "-.8em")
 					.attr("dy", ".15em")
-					.attr("transform", "rotate(-65)");
+					.attr("transform", "rotate(-65)")
+					.on("mouseover", function(d,k){
+						if (university_name_stack.length<2 ){ // 0개나 1개 선택한 경우 새로 마우스가 올라가는 text들은 bold로 보이도록 한다. (이미 bold인 녀석들은 변화가 없음)
+							d3.select(this).style("font-weight", "bold");
+						}					
+					})
+					.on("mouseout", function(d,k){
+						if (university_name_stack.length === 0){ // 하나도 스택에 안들어간상태면 나오면서 bold 해제하면 됨
+							d3.select(this).style("font-weight", "normal");
+						}
+						else if (university_name_stack.length === 1){ // 스택에 하나 들어가있는상태면, 그 내용물인거만 bold유지하고 나머지는 normal로.
+							if ((k!==university_name_stack[0]) && (k!==university_name_stack[1])){
+								d3.select(this).style("font-weight", "normal");
+							}
+						}
+						else { // 스택에 두개 들어간상태면 아무것도 안함.
+						}
+					})
+					.on("click", function(d,k){
+						if (university_name_stack.length===0){ //하나도 선택되어있지 않은경우 클릭시
+							university_name_stack[0] = k;
+							console.log(university_name_stack);
+						}
+						else if (university_name_stack.length === 1){ // 하나 선택되어 있는 경우 클릭시
+							if (university_name_stack[0] === k){ // 그것이 이미 선택되어 bold처리된 대학이라면
+								console.log("selected school 1 eliminated");
+								university_name_stack.pop();
+							}
+							else{ // 선택안된 대학을 선택했을 경우
+								university_name_stack[1] = k;
+								spiderChart.update(university_name_stack[0], university_name_stack[1], ["red", "green"]);
+							}
+						}
+						else { // 두 개 선택되어 있는 경우 클릭 시
+							if (university_name_stack[0] === k){
+								console.log("selected school 1 eliminated");
+								university_name_stack[0] = university_name_stack[1];
+								university_name_stack.pop();
+							}
+							else if (university_name_stack[1] === k){
+								console.log("selected school 2 eliminated");
+								university_name_stack.pop();
+							}
+						}
+					});
 			}		
 
 			GPA_slider.oninput = function() {
@@ -990,6 +1061,356 @@
 
             svg.call(zoom);
         }
+	d3.csv("uni3.csv").then(d => spiderChart(d));
+		function spiderChart(csv){
+
+			var svg = d3.select("#spiderChart")
+				.attr("transform", "translate(100, -200)")
+				.style("background", "rgb(240,240,255)");
+
+			let margin= {l: 60, r: 30, t: 30, b: 60 };
+			let keys = ["GPA", "TOEFL", "Master Acceptance", "Phd Acceptance", "Score", "Student/Faculty Ratio", "Tuition($)"];
+
+			const width =903, height = 387;
+  			const sideLength = height * .5 - 40; // 그래프 전체크기를 결정
+			const sides = keys.length; // 7
+			const borderDistance = sideLength / 6;
+			const baseX = width * 0.25, baseY = height * 0.5; // 그래프 시작위치 결정
+			//const schools = CONSTANTS().schools;
+			const hexBinary = hex => parseInt(hex, 16)
+			const hexToRGBA = (hex, opacity=1) => {	
+			hex = hex[0] === "#" ? hex.slice(1) : hex;
+				return "rgb(" + hexBinary(hex[0] + hex[1]) + "," + hexBinary(hex[2] + hex[3]) + "," + hexBinary(hex[4] + hex[5]) + "," + opacity + ")"};
+
+			const degToRadians = angle => angle * Math.PI / 180;
+			const coordX = (angle, rad, base) => Math.cos(degToRadians(angle)).toFixed(2) * rad + base;
+			const coordY = (angle, rad, base) => Math.sin(degToRadians(angle)).toFixed(2) * rad + base;
+			const pathToPoint = (i1, rad1, i2, rad2, start=false) => (
+				`${start ? "L" : "M"}` + `${coordX(i1*360/sides, rad1, baseX)},${coordY(i1*360/sides, rad1, baseY)}` +
+				`L${coordX(i2*360/sides, rad2, baseX)},${coordY(i2*360/sides, rad2, baseY)}` );
+
+			let paths = [...Array(6)].map((b, x) => {
+				const rad = (x+1) * borderDistance;
+					return pathToPoint(0, rad, 1, rad) + ([...Array(sides-1)].map((e, i) => pathToPoint(i+1, rad, i+2, rad, true))).join("") + " Z";
+				});
+
+
+			// 선택된 school 각각의 feature값 중 표시하고자 하는 feature의 값만 추출. 첫번째 인자로 학교명 배열, 2번째 인자로 첫번째 인자 학교명을 가지는 데이터 배열을 전달.
+			function data (schools, showData) {
+				
+				let result = schools.map(e => keys.map(c => [])); // showData에서 필요한 feature들의 '값' 만 추출한 배열
+  				showData.forEach((dat, i) => {
+					const schoolIndex = schools.indexOf(dat.Name);
+					// showData가 가지는 각 학교들의 feature들의 'key' 를 순회 (prop이 Name, Rank, GPA, TOEFL... 등등의 값임)
+    					Object.keys(dat).forEach(prop => {
+      						const keyIndex = keys.indexOf(prop); // 실제 showData에서 우리가 표시하고싶은 feature의 index 위치. -1이면 없는 feature이다.
+      						if (keyIndex !== -1){
+							let percentageIndex = dat[prop].indexOf("%", 0);
+							if (percentageIndex !== -1){ // % 기호가 존재한다는 의미
+								result[schoolIndex][keyIndex].push(parseFloat(dat[prop]));
+							}
+							else{
+								if (dat[prop].indexOf(".", 0) != -1){ // 소수점 존재할시
+									result[schoolIndex][keyIndex].push(parseFloat(dat[prop]));
+								}
+								else{	
+        								result[schoolIndex][keyIndex].push(parseInt(dat[prop]));
+								}
+							}
+						}
+    					});
+ 				});
+				return result;
+			}				
+
+			// Scaling function. feature 6개 각각에 대해 현재 data에 들어있는 학교들이 가지는 값들을 동일한 비율로 스케일링하는 함수이다.
+			function scalesFunc (range, schools, showData) {
+  				let scales = {};
+  				keys.forEach((key, i) => {
+				let vv = data(schools, showData).map(school=>school[i]);
+				let maxVal = 0.0;
+				for(let i=0; i<vv.length; i++){
+					if (vv[i][0]>maxVal){
+						maxVal = vv[i][0];
+					}
+				}
+  					scales[key] = d3.scaleLinear()
+ 						.domain([0, maxVal])
+    						.range([0, range]);
+				});
+	 			return scales;
+			}
+
+			// 내부 격자 다각형
+			let blocks = svg.selectAll("g.block").data(Array(6))
+				.enter().append("g")
+				.classed("block", true)
+				.append("path")
+				.attr("d", (d, i) => paths[i])
+				.style("stroke", "rgba(0,0,0,0.4)")
+				.style("fill", (d, i) => i ? "transparent" : "rgba(219,219,205,0.2)");
+
+			// 내부 격자 직선
+				let diagonal = svg.append("g").classed("diagonal", true);
+				keys.forEach((e, i) => {
+				diagonal.append("path")
+				.attr("d", pathToPoint(i, 0, i, sideLength))
+				.style("stroke", "rgba(0,0,0,0.4)");
+				});
+
+				d3.select('body')
+				.append('div')
+				.attr('id', 'tooltip')
+				.attr('style', 'position: absolute; opacity: 0;');
+		
+				let cc = 1;
+				// Draw Axes (7각형의 사이드에 붙은 label로, update하지않고 상시유지하되 mouseevent는 update때마다 출력하는 결과가 달라져야함)
+				svg.selectAll("g.axes")
+				.data(keys).enter().append("g")
+				.classed("axes", true)
+				.attr("transform", (d, i) => (
+				`translate(` + `${coordX(i*360/sides, sideLength+10, baseX)},` + `${coordY(i*360/sides, sideLength+10, baseY)})`))
+    				.append("text")
+     				.text(d => d)
+      				.attr("transform", (d, i) => `rotate(${(i*360/sides)+90})`)
+      				.style("font-size", "0.9rem")
+      				.attr("text-anchor", "middle")
+				.on("mouseover", function(d){
+					console.log("dd");
+				});
+				/*
+   				.on("click", function(d){
+					if (cc === 1){
+						update("Stanford University",null, ["red"]);
+						cc= cc+1;
+					}
+					else{
+						update("California Institute of Technology", "Cornell University", ["blue", "white"]);
+						cc = cc -1;
+					}
+				});*/
+
+			// Draw Labels (우하단)
+				let tmpSchool = ["university2 (not selected)", "university1 (not selected)"];
+				var labels = svg.selectAll("g.labels")
+				.data(tmpSchool).enter().append("g")
+				.classed("labels", true)
+				.attr("transform", (d, i) => (`translate(${width * 0.5}, ${height - margin.b - (i*20)})`))
+
+				// Content of labels
+				labels.append("rect")
+				.attr("x", 0).attr("y", 0)
+				.attr("width", 25).attr("height", 10)
+				.style("fill", (d, i) => d3.rgb("white"));
+
+				labels.append("text")
+				.attr("x", 35).attr("y", 10)
+				.style("font-size", "0.9rem")
+				.text(d=>d);
+
+			update();
+
+			function update(schoolName1, schoolName2, colors){
+				let selectedSchool = new Array(2);
+				let showData = new Array(2);
+				if ((typeof schoolName1 !== 'undefined')&&(typeof schoolName2 !== 'undefined')){ // 학교명이 2개주어졌을때
+					selectedSchool[0] = schoolName1;
+					selectedSchool[1] = schoolName2;
+					let cnt = 0;
+					for (let i=0; i<csv.length; i++){
+						if (csv[i].Name ==selectedSchool[0] || csv[i].Name == selectedSchool[1]){
+							showData[cnt] = csv[i];
+							cnt = cnt + 1;
+						}
+					}
+				}
+				else if (typeof schoolName2 !== 'undefined'){ // 학교명이 1개주어졌을때
+					selectedSchool[0] = schoolName1;
+					for (let i=0; i<csv.length; i++){
+						if (csv[i].Name ==selectedSchool[0]){
+							showData[0] = csv[i];
+						}
+					}
+				}
+				else{
+					console.log ("If this message occurred by your function calling, error is occurred - spider chart's update function needs at least one parameter.");
+					return;
+				}
+
+
+				const scales = scalesFunc(sideLength, selectedSchool, showData);
+
+				// Draw Spider Charts (스파이더차트 본체를 그리는곳으로, 선색상 및 채우기색상을 결정하고 그림을 그린다. Transition duration 넣어볼것.)
+				svg.selectAll("g.spiders").remove();
+  				svg.selectAll("g.spiders")
+				.data(selectedSchool).enter().append("g")
+				.classed("spiders", true)
+				.append("path")
+				.style("fill", (d,i)=>d3.rgb(0,0,0,0.0))
+				.style("stroke", (d, i) => d3.rgb(colors[i]))
+				.style("stroke-width", "3px")
+				.attr("d", (d,i)=>(keys.map((key, x) => {
+						let radiusFrom = scales[key](0),
+							radiusTo = scales[keys[(x+1)%sides]](0);
+						let k= pathToPoint(x, radiusFrom, x+1, radiusTo, x !== 0);
+						return k;
+        					}).join("") + ' Z'
+      				))
+				.transition().duration(1500)
+				.attr("d", (d, i) => (
+					keys.map((key, x) => {
+						let radiusFrom = scales[key](data(selectedSchool, showData)[i][x]),
+							radiusTo = scales[keys[(x+1)%sides]](data(selectedSchool, showData)[i][(x+1)%sides]);
+						let k= pathToPoint(x, radiusFrom, x+1, radiusTo, x !== 0);
+						return k;
+        					}).join("") + ' Z'
+      				))
+
+				d3.select('body')
+				.append('div')
+				.attr('id', 'tooltip')
+				.attr('style', 'position: absolute; opacity: 0;');
+		
+
+				// Draw Axes (7각형의 사이드에 붙은 label로, update하지않고 상시유지하되 mouseevent는 update때마다 출력하는 결과가 달라져야함)
+				svg.selectAll("g.axes")
+   				.on('mouseover', function(d,k){
+					d3.select(this).attr('fill', 'blue');
+					let c_name = showData.map(function(dat){return dat['Name'];});
+					let c_value = showData.map(function(dat) { return dat[k]; });
+					let c_text = c_name[1] + " : " + c_value[1] + ", " + c_name[0] + " : " + c_value[0];
+					d3.select('#tooltip').style('opacity', 1).text(c_text);
+
+   				})
+  				.on('mouseout', function(d){
+					d3.select(this).attr('fill', 'black');
+					d3.select('#tooltip').style('opacity', 0);	
+				})
+   				.on('mousemove', function(d) {
+					d3.select('#tooltip')
+					.style('left', (d.pageX+10) + 'px')
+					.style('top', (d.pageY+10) + 'px')
+   				});
+
+				// Draw Labels (우하단)
+				svg.selectAll("g.labels").remove();
+				labels = svg.selectAll("g.labels")
+				.data(selectedSchool).enter().append("g")
+				.classed("labels", true)
+				.attr("transform", (d, i) => (`translate(${width * 0.5}, ${height - margin.b - (i*20)})`))
+
+				// Content of labels
+				labels.append("rect")
+				.attr("x", 0).attr("y", 0)
+				.attr("width", 25).attr("height", 10)
+				.style("fill", (d, i) => d3.rgb(colors[i]));
+
+				labels.append("text")
+				.attr("x", 35).attr("y", 10)
+				.style("font-size", "0.9rem")
+				.text(d=>d)
+				.on('mouseover', function(d,k){
+					d3.select(this).attr('fill', 'red');
+					for (let i=0; i<showData.length; i++){
+						if (showData[i].Name === k){
+							svg.append('filter')
+							.attr('id', 'shadow')
+  		 					.append('feDropShadow')
+  		 					.attr('flood-opacity', 0.8)
+  		 					.attr('dx', 1)
+  		 					.attr('dy', 1)
+  							.attr('stdDeviation', 3);
+
+							svg.append("rect")
+							.attr("id", "detailView")
+							.attr("x", 450)
+							.attr("y", 20)
+							.attr("width", 250)
+							.attr("height", 250)
+							.attr("fill","white")
+							.attr('filter', 'url(#shadow)');
+	
+							let showName = "";
+							console.log(showData[i]["Name"].length);
+							if (showData[i]["Name"].length >= 30){
+								showName = showData[i]["Name"].substring(0, 30);
+								showName = showName + "...";
+							}
+							else{
+								showName = showData[i]["Name"];
+							}
+							let tex = svg.append("text")
+								.attr("id", "detailText")
+								.attr("x", 470)
+								.attr("y", 30)
+								.attr("font-size", "13px")
+								.attr("font-family", "sans-serif")
+								.append("tspan")
+								.text(function(){return "Name : " + showName})
+								.attr("x", 470)
+								.attr("y", 40)
+								.append("tspan")
+								.text(function(){return "GPA : " + showData[i]["GPA"]})
+								.attr("x", 470)
+								.attr("y", 58)
+								.append("tspan")
+								.text(function(){return "GRE : " + showData[i]["GRE"]})
+								.attr("x", 470)
+								.attr("y", 76)
+								.append("tspan")
+								.text(function(){return "Master Acceptance : " + showData[i]["Master Acceptance"]})
+								.attr("x", 470)
+								.attr("y", 94)
+								.append("tspan")
+								.text(function(){return "Master Applicants : " + showData[i]["Master Applicants"]})
+								.attr("x", 470)
+								.attr("y", 112)
+								.append("tspan")
+								.text(function(){return "Phd Acceptance : " + showData[i]["Phd Acceptance"]})
+								.attr("x", 470)
+								.attr("y", 130)
+								.append("tspan")
+								.text(function(){return "Phd Applicants : " + showData[i]["Phd Applicants"]})
+								.attr("x", 470)
+								.attr("y", 148)
+								.append("tspan")
+								.text(function(){return "Rank : " + showData[i]["Rank"]})
+								.attr("x", 470)
+								.attr("y", 166)
+								.append("tspan")
+								.text(function(){return "Score : " + showData[i]["Score"]})
+								.attr("x", 470)
+								.attr("y", 184)
+								.append("tspan")
+								.text(function(){return "Student/Faculty Ratio : " + showData[i]["Student/Faculty Ratio"]})
+								.attr("x", 470)
+								.attr("y", 202)
+								.append("tspan")
+								.text(function(){return "Students : " + showData[i]["Students"]})
+								.attr("x", 470)
+								.attr("y", 220)
+								.append("tspan")
+								.text(function(){return "TOEFL : " + showData[i]["TOEFL"]})
+								.attr("x", 470)
+								.attr("y", 238)
+								.append("tspan")
+								.text(function(){return "Tuition($) : " + showData[i]["Tuition($)"]})
+								.attr("x", 470)
+								.attr("y", 256)
+			
+  						}
+					}
+				})
+			.on('mouseout', function(d){
+				d3.select(this).attr('fill', 'black');
+				d3.selectAll('#detailView').style("opacity", 0);
+				d3.selectAll('#detailText').style("opacity", 0);
+			});
+			
+
+			}
+			spiderChart.update = update;
+	}
 
 		</script>
 	</body>
