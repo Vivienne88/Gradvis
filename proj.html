@@ -121,10 +121,10 @@
 						</label>	
 					</div>
 					<h6>Sort</h6>
-					<label class="checkbox-inline">
-						<input type="checkbox" id="sort">	
-						Toggle sort 
-					</label>				
+					<div>
+						Sort : <span id="Sort_value">Sort by Name</span>
+						<input type="range" min="0" max="2" value="0" class="slider" id="mySort">
+					</div>
 				</div>
 				<div class="col-9">
 					<svg id="chart" width="650" height="800"></svg>
@@ -153,6 +153,9 @@
 
 		Rank_slider = document.getElementById("myRank")
 		Rank_ouput = document.getElementById("Rank_value")
+
+		Sort_slider = document.getElementById("mySort")
+		Sort_ouput = document.getElementById("Sort_value")
 
 		attributes = document.querySelectorAll('input[name=attributes]')
 
@@ -213,9 +216,9 @@
 			// 	.range(["steelblue", "darkorange", "lightblue"])
 			// 	.domain(keys);
 
-			update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 0)
+			update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 0)
 
-			function update(GPA, TOEFL, GRE, rank, speed) {
+			function update(GPA, TOEFL, GRE, rank, sort, speed) {
 				var checkedBoxes = document.querySelectorAll('input[name=attributes]:checked');
 				
 				keys = []
@@ -295,9 +298,13 @@
 				svg.selectAll(".y-axis").transition().duration(speed)
 					.call(d3.axisLeft(y).ticks(null, "s"))
 
-				data.sort(d3.select("#sort").property("checked")
-					? (a, b) => b.total - a.total
-					: (a, b) => names.indexOf(a.Name) - names.indexOf(b.Name))
+				if(sort == 0){
+					data.sort((a, b) => names.indexOf(a.Name) - names.indexOf(b.Name))
+				} else if(sort == 1){
+					data.sort((a, b) => b.total - a.total)
+				} else if(sort == 2){
+					data.sort((a, b) => a.total - b.total)
+				}
 
 				x.domain(data.map(d => d.Name));
 
@@ -400,8 +407,8 @@
 				} else {
 					GPA_ouput.innerHTML = this.value / 10;
 				}
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 
 			TOEFL_slider.oninput = function() {
@@ -410,8 +417,8 @@
 				} else {
 					TOEFL_ouput.innerHTML = this.value;
 				}				
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}			
 
 			GRE_slider.oninput = function() {
@@ -420,8 +427,8 @@
 				} else {
 					GRE_ouput.innerHTML = "Required";
 				}
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750) 
 			}	
 
 			Rank_slider.oninput = function() {
@@ -430,21 +437,28 @@
 				} else {
 					Rank_ouput.innerHTML = "TOP " + this.value;
 				}
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+			}	
+
+			Sort_slider.oninput = function() {
+				if(this.value == 0){
+					Sort_ouput.innerHTML = "Sort by Name";
+				} else if(this.value == 1) {
+					Sort_ouput.innerHTML = "Ascending Sort"
+				} else {
+					Sort_ouput.innerHTML = "Descending Sort"
+				}
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}	
 
 			attributes.forEach(function(DOM){
 				DOM.onchange = function() {
-					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-					barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+					barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				}
 			})
-
-			let checkbox = document.getElementById('sort').addEventListener("click", function() {
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750);
-			}, false) 
 
 			students_score_layer.onclick = function() {
 				barChartKey = this.id
@@ -452,7 +466,7 @@
 				barChartColor = this.getAttribute('fill')
 				console.log(barChartKey)
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				//students_score_layer.onclick = null;
 			}
 			tuition_score_layer.onclick = function() {
@@ -460,7 +474,7 @@
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				//students_score_layer.onclick = null;
 			}
 			score_layer.onclick = function() {
@@ -468,77 +482,77 @@
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			student_faculty_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			master_acceptance_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			master_applicants_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			phd_acceptance_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			phd_applicants_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			ai_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			mlmining_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			act_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			mod_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			visualization_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 		}
 
@@ -616,8 +630,8 @@
 				.attr("transform", `translate(${margin.left},0)`)
 				.attr("class", "y-axis")
 			
-			update("Rank", "black", GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 0);
-			function update(key, color, GPA, TOEFL, GRE, rank, speed) {
+			update("Rank", "black", GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 0);
+			function update(key, color, GPA, TOEFL, GRE, rank, sort, speed) {
 
 				GPA = GPA / 10
 				var data = null
@@ -642,9 +656,13 @@
 				svg.selectAll(".y-axis").transition().duration(speed)
 					.call(d3.axisLeft(y).ticks(null, "s"))
 
-				data.sort(d3.select("#sort").property("checked")
-					? (a, b) => b[key] - a[key]
-					: (a, b) => names.indexOf(a.Name) - names.indexOf(b.Name))
+				if(sort == 0){
+					data.sort((a, b) => names.indexOf(a.Name) - names.indexOf(b.Name))
+				} else if(sort == 1){
+					data.sort((a, b) => b[key] - a[key])
+				} else if(sort == 2){
+					data.sort((a, b) => a[key] - b[key])
+				}
 
 				x.domain(data.map(d => d.Name))
 
