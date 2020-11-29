@@ -184,9 +184,10 @@
 				</div>
 				<div class="col-10">
 					<svg id="chart" width="700" height="800"></svg>
-					<svg id="barChart" width="700" height="800"></svg>
-					<svg id="mapChart" width="600" height="800"></svg>
-					<svg id = "spiderChart" width = "700", height = "387"></svg>
+					<svg id="barChart" width="700" height="800"></svg>	
+					<svg id="mapChart" width="700" height="387"></svg>
+					<svg id = "spiderChart" width = "700", height = "387"></svg>	
+					<svg id = "pieChart" width = "500", height = "500"></svg>
 				</div>
 			</div>
 		</div>
@@ -254,7 +255,6 @@
 				margin = {top: 35, left: 80, bottom: 120, right: 0},
 				width = +svg.attr("width") - margin.left - margin.right,
 				height = +svg.attr("height") - margin.top - margin.bottom;
-				mheight = +svg.attr("height")
 
 			var x = d3.scaleBand()
 				.range([margin.left, width - margin.right])
@@ -508,6 +508,9 @@
 								university_name_stack.pop();
 							}
 						}
+
+						/* Pie Chart Logic for Click */
+						pie_chart(data, k);
 					});
 			}		
 
@@ -1064,11 +1067,11 @@
             svg.call(zoom);
         }
 
-	d3.csv("uni3.csv").then(d => spiderChart(d));
+		d3.csv("uni3.csv").then(d => spiderChart(d));
+		
 		function spiderChart(csv){
 
 			var svg = d3.select("#spiderChart")
-				.attr("transform", "translate(100, -200)")
 				.style("background", "rgb(240,240,255)");
 
 			let margin= {l: 60, r: 30, t: 30, b: 60 };
@@ -1412,7 +1415,89 @@
 			
 			}
 			spiderChart.update = update;
-	}
+		}
+
+		d3.csv("uni3.csv").then(d => pie_chart(d, name))
+
+		function pie_chart(csv, name) {
+			selected_row = null
+			if(name == ""){
+				// selected_row = csv.filter(d => d.Name == "Massachusetts Institute of Technology")[0]
+				return
+			} else {
+				selected_row = csv.filter(d => d.Name == name)[0]
+			}
+			
+			names = ["Artificial intelligence", "Machine learning & data mining", "Theory", "Database", "visualization"]
+			values = ["ai", "mlmining", "act", "mod", "visualization"]
+
+			data = []
+			values.map((d, i) => {
+				if(selected_row[d] != 0){
+					data.push({name : names[i], value : selected_row[d]})
+				}
+			})
+
+			pie = d3.pie()
+			.sort(null)
+			.value(d => d.value)
+
+			const arcs = pie(data);
+			console.log(arcs);
+
+			const svg = d3.select("#pieChart"),
+				margin = {top: 35, left: 50, bottom: 0, right: 50},
+				width = +svg.attr("width") - margin.left - margin.right,
+				height = +svg.attr("height") - margin.top - margin.bottom;
+			
+			svg.attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+			arcObj = {
+				radius : Math.min(width, height) / 2 * 0.8,
+				init : function() {
+					return d3.arc().innerRadius(this.radius).outerRadius(this.radius)
+				}
+			}
+			arcLabel = arcObj.init();
+
+			arc = d3.arc()
+			.innerRadius(0)
+			.outerRadius(Math.min(width, height) / 2 - 1)
+
+			// height = Math.min(width, 500)
+
+			color = d3.scaleOrdinal()
+			.domain(data.map(d => d.name))
+			.range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse())
+
+			svg.append("g")
+				.attr("stroke", "white")
+			.selectAll("path")
+			.data(arcs)
+			.join("path")
+				.attr("fill", d => color(d.data.name))
+				.attr("d", arc)
+			.append("title")
+				.text(d => `${d.data.name}: ${d.data.value.toLocaleString()}`);
+
+			svg.append("g")
+				.attr("font-family", "sans-serif")
+				.attr("font-size", 12)
+				.attr("text-anchor", "middle")
+			.selectAll("text")
+			.data(arcs)
+			.join("text")
+				.attr("transform", d => `translate(${arcLabel.centroid(d)})`)
+				.call(text => text.append("tspan")
+					.attr("y", "-0.4em")
+					.attr("font-weight", "bold")
+					.text(d => d.data.name))
+				.call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
+					.attr("x", 0)
+					.attr("y", "0.7em")
+					.attr("fill-opacity", 0.7)
+					.text(d => d.data.value.toLocaleString()));
+		}
 
 		</script>
 	</body>
