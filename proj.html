@@ -162,7 +162,7 @@
 		let barChartKey = "Rank";
 		let barChartColor = 'black';
 		let tmp_color;
-		let sort_color;
+		let sort_color = 'black';
 
 		// layer 변수들 추가
 		let students_score_layer;
@@ -408,7 +408,7 @@
 					GPA_ouput.innerHTML = this.value / 10;
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 
 			TOEFL_slider.oninput = function() {
@@ -418,7 +418,7 @@
 					TOEFL_ouput.innerHTML = this.value;
 				}				
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}			
 
 			GRE_slider.oninput = function() {
@@ -428,7 +428,7 @@
 					GRE_ouput.innerHTML = "Required";
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750) 
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750) 
 			}	
 
 			Rank_slider.oninput = function() {
@@ -438,7 +438,7 @@
 					Rank_ouput.innerHTML = "TOP " + this.value;
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}	
 
 			Sort_slider.oninput = function() {
@@ -450,13 +450,13 @@
 					Sort_ouput.innerHTML = "Ascending Sort";
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}	
 
 			attributes.forEach(function(DOM){
 				DOM.onchange = function() {
 					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
-					barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+					barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				}
 			})
 
@@ -466,7 +466,7 @@
 				barChartColor = this.getAttribute('fill')
 				console.log(barChartKey)
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				//students_score_layer.onclick = null;
 			}
 			tuition_score_layer.onclick = function() {
@@ -474,7 +474,7 @@
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				//students_score_layer.onclick = null;
 			}
 			score_layer.onclick = function() {
@@ -482,77 +482,77 @@
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			student_faculty_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			master_acceptance_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			master_applicants_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			phd_acceptance_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			phd_applicants_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			ai_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			mlmining_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			act_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			mod_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 			visualization_score_layer.onclick = function() {
 				barChartKey = this.id
 				barChartKey = barChartKey.slice(0, -6)
 				barChartColor = this.getAttribute('fill')
 				
-				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 			}
 		}
 
@@ -630,7 +630,7 @@
 				.attr("transform", `translate(${margin.left},0)`)
 				.attr("class", "y-axis")
 			
-			update("Rank", "black", GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 0);
+			update("Rank", sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 0);
 			function update(key, color, GPA, TOEFL, GRE, rank, sort, speed) {
 
 				GPA = GPA / 10
