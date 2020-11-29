@@ -245,9 +245,6 @@
 					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required" && f.Rank <= rank)
 				}
 					
-				console.log(data)
-				data.filter(f => console.log(TOEFL))
-
 				data.forEach(function(d) {
 					d["Students"] = d["Students"].replace(',', '')
 					d["Tuition($)"] = d["Tuition($)"].replace(',', '')
@@ -332,7 +329,6 @@
 					.on('mouseleave', function() {
 						d3.select(this)
 							.attr('fill', tmp_color)
-							
 					})
 
 				// layer 관련 추가 코드
@@ -402,128 +398,10 @@
 					barChartKey = this.id
 					barChartKey = barChartKey.slice(0, -6)
 					barChartColor = this.getAttribute('fill')
-					barChart.update(barChartKey, barChartColor, 750)
+					barChart.update(barChartKey, barChartColor, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 					//students_score_layer.onclick = null;
 				}
-				Rank_slider.oninput = function() {
-					if(this.value == 0){
-						Rank_ouput.innerHTML = "No Filter";
-					} else {
-						Rank_ouput.innerHTML = "TOP " + this.value;
-					}
-					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				}	
-
-				attributes.forEach(function(DOM){
-					DOM.onchange = function() {
-						update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-					}
-				})
-
-				students_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					console.log(barChartKey)
-					
-					barChart.update(barChartKey, tmp_color, 750)
-					//students_score_layer.onclick = null;
-				}
-				tuition_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-					//students_score_layer.onclick = null;
-				}
-				score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				student_faculty_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				master_acceptance_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				master_applicants_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				phd_acceptance_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				phd_applicants_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				ai_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				mlmining_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				act_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				mod_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-				visualization_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					
-					barChart.update(barChartKey, tmp_color, 750)
-				}
-			}
-
-			var select = d3.select("#year")
-				.on("change", function() {
-					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				})
-
-			let checkbox = document.getElementById('sort').addEventListener("click", function() {
-				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750);
-			}, false)
+			}		
 
 			GPA_slider.oninput = function() {
 				if(this.value == 0){
@@ -532,7 +410,8 @@
 					GPA_ouput.innerHTML = this.value / 10;
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-			}		
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
 
 			TOEFL_slider.oninput = function() {
 				if(this.value == 0){
@@ -541,6 +420,7 @@
 					TOEFL_ouput.innerHTML = this.value;
 				}				
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
 			}			
 
 			GRE_slider.oninput = function() {
@@ -550,10 +430,139 @@
 					GRE_ouput.innerHTML = "Required";
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-			}			
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}	
+
+			Rank_slider.oninput = function() {
+				if(this.value == 0){
+					Rank_ouput.innerHTML = "No Filter";
+				} else {
+					Rank_ouput.innerHTML = "TOP " + this.value;
+				}
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}	
+
+			attributes.forEach(function(DOM){
+				DOM.onchange = function() {
+					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+					barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				}
+			})
+
+			let checkbox = document.getElementById('sort').addEventListener("click", function() {
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				barChart.update(barChartKey, barChartColor, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750);
+			}, false) 
+
+			students_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				console.log(barChartKey)
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				//students_score_layer.onclick = null;
+			}
+			tuition_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+				//students_score_layer.onclick = null;
+			}
+			score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			student_faculty_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			master_acceptance_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			master_applicants_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			phd_acceptance_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			phd_applicants_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			ai_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			mlmining_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			act_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			mod_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
+			visualization_score_layer.onclick = function() {
+				barChartKey = this.id
+				barChartKey = barChartKey.slice(0, -6)
+				barChartColor = this.getAttribute('fill')
+				
+				barChart.update(barChartKey, tmp_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+			}
 		}
 
+		// var select = d3.select("#year")
+		// 	.on("change", function() {
+		// 		update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
+		// 	})
+
+		// let checkbox = document.getElementById('sort').addEventListener("click", function() {
+		// 	update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750);
+		// 	update(barChartKey, barChartColor, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750);
+		// }, false)			
+
 		d3.csv("uni3.csv").then(d => barChart(d));
+		
 		function barChart(csv) 
 		{
 			csv.forEach(function(d) {
@@ -626,10 +635,21 @@
 				.attr("transform", `translate(${margin.left},0)`)
 				.attr("class", "y-axis")
 			
+			update("Rank", "black", GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 0);
+			function update(key, color, GPA, TOEFL, GRE, rank, speed) {
 
-			update("Rank", "black", 0);
-			function update(key, color, speed) {
-				let data = csv;
+				GPA = GPA / 10
+				var data = null
+
+				if(GRE == 0 && rank == 0){
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL)
+				} else if (GRE == 0 && rank != 0) {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.Rank <= rank)
+				} else if (GRE != 0 && rank == 0) {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required")
+				} else {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required" && f.Rank <= rank)
+				}
 				
 				//y.domain([0, d3.max(data, d => d[key])]).nice() // score 컬럼에서 max가 88이 나옴
 				let max = d3.max(data, d => d[key])
@@ -658,8 +678,8 @@
 				bar.enter().append("rect")
 					.attr("class", "bar")
 					.attr("fill", color)
-					.attr("width", x.bandwidth())
 					.merge(bar)
+					.attr("width", x.bandwidth())
 				.transition().duration(speed)
 					.attr("x", d => x(d.Name))
 					.attr("y", d => y(d[key]))
@@ -672,12 +692,9 @@
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)");		
 			}
-			barChart.update = update;
-			
-			let checkbox = document.getElementById('sort').addEventListener("click", function() {
-				update(barChartKey, barChartColor, 750);
-			}, false) 
+			barChart.update = update;			
 		}
+
 		</script>
 	</body>
 </html> 
