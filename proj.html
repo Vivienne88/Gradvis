@@ -158,7 +158,8 @@
 
 		let barChartKey = "Rank";
 		let barChartColor = 'black';
-		let tmp_color;
+		let tmp_color = 'black';
+		let sort_color = 'black';
 
 		// layer 변수들 추가
 		let students_score_layer;
@@ -326,6 +327,10 @@
 						d3.select(this)
 							.attr("fill", "black")
 					})
+					.on('mousedown', function(){
+						sort_color = tmp_color;
+						console.log(sort_color)
+					})
 					.on('mouseleave', function() {
 						d3.select(this)
 							.attr('fill', tmp_color)
@@ -452,7 +457,7 @@
 
 			let checkbox = document.getElementById('sort').addEventListener("click", function() {
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-				barChart.update(barChartKey, barChartColor, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750);
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750);
 			}, false) 
 
 			students_score_layer.onclick = function() {
