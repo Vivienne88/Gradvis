@@ -158,8 +158,8 @@
 
 		let barChartKey = "Rank";
 		let barChartColor = 'black';
-		let tmp_color = 'black';
-		let sort_color = 'black';
+		let tmp_color;
+		let sort_color;
 
 		// layer 변수들 추가
 		let students_score_layer;
@@ -183,13 +183,7 @@
 			, 'Master Applicants Score', 'Phd Acceptance Score', 'Phd Applicants Score', 'ai Score', 'mlmining Score'
 			, 'act Score', 'mod Score', 'visualization Score']
 			
-			//var year   = [...new Set(csv.map(d => d.Year))]
 			var names = [...new Set(csv.map(d => d.Name))]
-
-			// var options = d3.select("#year").selectAll("option")
-			// 	.data(year)
-			// .enter().append("option")
-			// 	.text(d => d)
 
 			var svg = d3.select("#chart"),
 				margin = {top: 35, left: 80, bottom: 120, right: 0},
@@ -398,14 +392,6 @@
 					.attr("dx", "-.8em")
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)");
-
-				students_score_layer.onclick = function() {
-					barChartKey = this.id
-					barChartKey = barChartKey.slice(0, -6)
-					barChartColor = this.getAttribute('fill')
-					barChart.update(barChartKey, barChartColor, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-					//students_score_layer.onclick = null;
-				}
 			}		
 
 			GPA_slider.oninput = function() {
@@ -556,16 +542,6 @@
 			}
 		}
 
-		// var select = d3.select("#year")
-		// 	.on("change", function() {
-		// 		update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750)
-		// 	})
-
-		// let checkbox = document.getElementById('sort').addEventListener("click", function() {
-		// 	update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, 750);
-		// 	update(barChartKey, barChartColor, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, 750);
-		// }, false)			
-
 		d3.csv("uni3.csv").then(d => barChart(d));
 		
 		function barChart(csv) 
@@ -618,7 +594,7 @@
 															
 				return d
 			})
-			let names = [...new Set(csv.map(d => d.Name))] //months
+			let names = [...new Set(csv.map(d => d.Name))]
 			
 			let svg = d3.select("#barChart"),
 				margin = {top: 35, left: 80, bottom: 120, right: 0},
