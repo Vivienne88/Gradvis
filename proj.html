@@ -24,28 +24,32 @@
 			svg {
 				font: 12px arial;
 			}
-		#tooltip {
-			position: absolute;
-        			height: auto;
-			padding:10px;
-			background-color: white;
-			-webkit-border-radius: 10px;
-			-moz-border-radius: 10px;
-			border-radius: 10px;
-			-webkit-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-			-moz-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-			box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-			pointer-events: none;
-		}
-		#tooltip.hidden {
-			display: none;
-		}
-		#tooltip p {
-			margin: 0;
-			font-family: sans-serif;
-			font-size: 16px;
-			line-height: 20px;
-		}
+
+			#tooltip {
+				position: absolute;
+						height: auto;
+				padding:10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+				box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+				pointer-events: none;
+			}
+
+			#tooltip.hidden {
+				display: none;
+			}
+
+			#tooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			}
+
 		</style>
 	</head>
 	<body>
@@ -181,12 +185,9 @@
 				<div class="col-10">
 					<svg id="chart" width="700" height="800"></svg>
 					<svg id="barChart" width="700" height="800"></svg>
-					<svg id="mapChart" width="700" height="800"></svg>
+					<svg id="mapChart" width="600" height="800"></svg>
+					<svg id = "spiderChart" width = "700", height = "387"></svg>
 				</div>
-				<div id="spider" style="float:left;">
-					<svg id = "spiderChart" width = "800", height = "387"></svg>
-				</div>
-
 			</div>
 		</div>
 
@@ -839,6 +840,7 @@
 			}
 			barChart.update = update;			
 		}
+
 		/*
 			map chart
 		*/
@@ -1061,6 +1063,7 @@
 
             svg.call(zoom);
         }
+
 	d3.csv("uni3.csv").then(d => spiderChart(d));
 		function spiderChart(csv){
 
@@ -1407,7 +1410,6 @@
 				d3.selectAll('#detailText').style("opacity", 0);
 			});
 			
-
 			}
 			spiderChart.update = update;
 	}
