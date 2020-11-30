@@ -140,13 +140,13 @@
 					<div>
 						<label class="checkbox-inline">
 							<input type="checkbox" id="Artificial intelligence" name="attributes" value="ai" checked="true">
-							Artificial intelligence
+							Artificial Intelligence
 						</label>							
 					</div>
 					<div>
 						<label class="checkbox-inline">
 							<input type="checkbox" id="Machine learning & data mining" name="attributes" value="mlmining" checked="true">
-							Machine learning
+							Machine Learning
 						</label>	
 					</div>
 					<div>
@@ -258,7 +258,7 @@
 
 			svg.append("text")
 				.attr("x", 50 + (width / 2))             
-				.attr("y", 50 - (margin.top / 2))
+				.attr("y", 40 - (margin.top / 2))
 				.attr("text-anchor", "middle")  
 				.style("font-size", "16px") 
 				.style("text-decoration", "underline")  
@@ -877,8 +877,31 @@
 				if(init == false){
 					init = true
 				} else {
+					titleKey = key;
+					if(titleKey == "ai"){
+						titleKey = "Artificial Intelligence"
+					} else if(titleKey == "mlmining"){
+						titleKey = "Machine Learning"
+					} else if(titleKey == "act"){
+						titleKey = "Theory"
+					} else if(titleKey == "mod") {
+						titleKey = "Database"
+					} else if(titleKey == "visualization"){
+						titleKey = "Visualization"
+					} else if(titleKey == "ai Score"){
+						titleKey = "Artificial Intelligence Score"
+					} else if(titleKey == "mlmining Score"){
+						titleKey = "Machine Learning Score"
+					} else if(titleKey == "act Score"){
+						titleKey = "Theory Score"
+					} else if(titleKey == "mod Score") {
+						titleKey = "Database Score"
+					} else if(titleKey == "visualization Score"){
+						titleKey = "Visualization Score"
+					}
+
 					let title = svg.selectAll(".title")
-					.data(["Detail view of " + key])
+					.data(["Detail view of " + titleKey])
 
 					title.transition()
 						.duration(speed)
