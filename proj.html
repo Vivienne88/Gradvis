@@ -222,6 +222,7 @@
 		let mapChartCircleSize;
 		let tmp_color;
 		let sort_color = 'white';
+		let init = false
 
 		// spider chart 용 stack
 		let university_name_stack = new Array;
@@ -254,6 +255,14 @@
 				margin = {top: 35, left: 80, bottom: 120, right: 0},
 				width = +svg.attr("width") - margin.left - margin.right,
 				height = +svg.attr("height") - margin.top - margin.bottom;
+
+			svg.append("text")
+				.attr("x", 50 + (width / 2))             
+				.attr("y", 50 - (margin.top / 2))
+				.attr("text-anchor", "middle")  
+				.style("font-size", "16px") 
+				.style("text-decoration", "underline")  
+				.text("Total Score of Attributes");
 
 			var x = d3.scaleBand()
 				.range([margin.left, width - margin.right])
@@ -384,7 +393,8 @@
 					.attr("fill", d => z(d.key));
 				
 				d3.selectAll("g.layer")
-					.on('mouseenter', function() {
+					.on('mouseenter', function(e, k) {
+						console.log(k)
 						tmp_color = this.getAttribute('fill')
 						d3.select(this)
 							.attr("fill", "black")
@@ -393,7 +403,8 @@
 						sort_color = tmp_color;
 						//console.log(sort_color)
 					})
-					.on('mouseleave', function() {
+					.on('mouseleave', function(e, k) {
+						console.log(k)
 						d3.select(this)
 							.attr('fill', tmp_color)
 					})
@@ -862,6 +873,27 @@
 					.attr("dx", "-.8em")
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)");		
+
+				if(init == false){
+					init = true
+				} else {
+					let title = svg.selectAll(".title")
+					.data(["Detail view of " + key])
+
+					title.transition()
+						.duration(speed)
+						.text(d => d);
+					
+					title.enter()
+						.append("text")
+						.attr("class", "title")
+						.attr("x", 50 + (width / 2))             
+						.attr("y", 40 - (margin.top / 2))
+						.attr("text-anchor", "middle")  
+						.style("font-size", "16px") 
+						.style("text-decoration", "underline")  
+						.text(d => d);
+				}
 			}
 			barChart.update = update;			
 		}
