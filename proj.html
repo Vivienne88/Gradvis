@@ -508,6 +508,125 @@
 							}
 						}
 					});
+				if (students_score_layer !== null) {
+					students_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+						//students_score_layer.onclick = null;
+					}
+				} 
+				if (tuition_score_layer !== null) {
+					tuition_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+						//students_score_layer.onclick = null;
+					}
+				}	
+				if (score_layer !== null) {
+					score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (student_faculty_score_layer !== null) {
+					student_faculty_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (master_acceptance_score_layer !== null) {
+					master_acceptance_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (master_applicants_score_layer !== null) {
+					master_applicants_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (phd_acceptance_score_layer !== null) {
+					phd_acceptance_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (phd_applicants_score_layer !== null) {
+					phd_applicants_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (ai_score_layer !== null) {
+					ai_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (mlmining_score_layer !== null) {
+					mlmining_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (act_score_layer !== null) {
+					act_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (mod_score_layer !== null) {
+					mod_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (visualization_score_layer !== null) {
+					visualization_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
 			}		
 
 			GPA_slider.oninput = function() {
@@ -551,6 +670,7 @@
 			}	
 
 			Sort_slider.oninput = function() {
+				console.log()
 				if(this.value == 0){
 					Sort_ouput.innerHTML = "Sort by Name";
 				} else if(this.value == 1) {
@@ -577,100 +697,6 @@
 					barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
 				}
 			})
-
-			students_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-				//students_score_layer.onclick = null;
-			}
-			tuition_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-				//students_score_layer.onclick = null;
-			}
-			score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			student_faculty_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			master_acceptance_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			master_applicants_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			phd_acceptance_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			phd_applicants_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			ai_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			mlmining_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			act_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			mod_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
-			visualization_score_layer.onclick = function() {
-				barChartKey = this.id
-				barChartKey = barChartKey.slice(0, -6)
-				barChartColor = this.getAttribute('fill')
-				
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
-			}
 		}
 
 		d3.csv("uni3.csv").then(d => barChart(d));
@@ -1412,7 +1438,6 @@
 			}
 			spiderChart.update = update;
 		}
-		
 		</script>
 	</body>
 </html> 
