@@ -306,8 +306,8 @@
 				}
 					
 				data.forEach(function(d) {
-					d["Students"] = d["Students"].replace(',', '')
-					d["Tuition($)"] = d["Tuition($)"].replace(',', '')
+					d["Students"] = +d["Students"].replace(',', '')
+					d["Tuition($)"] = +d["Tuition($)"].replace(',', '')
 					d["Rank"] = +d["Rank"]
 					d["GPA"] = +d["GPA"]
 					d["TOEFL"] = +d["TOEFL"]
