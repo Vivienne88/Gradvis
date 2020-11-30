@@ -187,7 +187,6 @@
 					<svg id="barChart" width="700" height="800"></svg>	
 					<svg id="mapChart" width="700" height="387"></svg>
 					<svg id = "spiderChart" width = "700", height = "387"></svg>	
-					<svg id = "pieChart" width = "500", height = "500"></svg>
 				</div>
 			</div>
 		</div>
@@ -508,10 +507,6 @@
 								university_name_stack.pop();
 							}
 						}
-
-						/* Pie Chart Logic for Click */
-						// pie_chart(data, k);
-						pieChart.update(data, k);
 					});
 			}		
 
@@ -1417,164 +1412,7 @@
 			}
 			spiderChart.update = update;
 		}
-
-		d3.csv("uni3.csv").then(d => pieChart(d, name))
-
-		function pieChart(csv, name) {
-			speed = 750
-			names = ["Artificial intelligence", "Machine learning", "Theory", "Database", "Visualization"]
-			values = ["ai", "mlmining", "act", "mod", "visualization"]
-
-			const svg = d3.select("#pieChart"),
-				margin = {top: 35, left: 0, bottom: 0, right: 200},
-				width = +svg.attr("width") - margin.left - margin.right,
-				height = +svg.attr("height") - margin.top - margin.bottom;
-			
-			svg.attr("viewBox", [-width / 2, -height / 2, width, height]);
-				// .attr("stroke", "white");
-
-			arcObj = {
-				radius : Math.min(width, height) / 2 * 0.8,
-				init : function() {
-					return d3.arc().innerRadius(this.radius).outerRadius(this.radius)
-				}
-			}
-			arcLabel = arcObj.init();
-
-			color = d3.scaleOrdinal()
-				.domain(names)
-				.range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), names.length).reverse())
-
-			pie = d3.pie()
-			.sort(null)
-			.value(d => d.value)
-
-			arc = d3.arc()
-				.innerRadius(0)
-				.outerRadius(Math.min(width, height) / 2 - 1)
-
-			update(csv, name)
-
-			function update(data, name){
-				data.forEach(function(d) {
-					d["act"] = +d["act"]
-					d["ai"] = +d["ai"]
-					d["arch"] = +d["arch"]
-					d["bio"] = +d["bio"]
-					d["chi"] = +d["chi"]
-					d["comm"] = +d["comm"]
-					d["crypt"] = +d["crypt"]
-					d["da"] = +d["da"]
-					d["ecom"] = +d["ecom"]
-					d["graph"] = +d["graph"]
-					d["hpc"] = +d["hpc"]
-					d["ir"] = +d["ir"]
-					d["log"] = +d["log"]
-					d["metrics"] = +d["metrics"]
-					d["mlmining"] = +d["mlmining"]
-					d["mobile"] = +d["mobile"]
-					d["mod"] = +d["mod"]
-					d["nlp"] = +d["nlp"]
-					d["ops"] = +d["ops"]
-					d["plan"] = +d["plan"]
-					d["robotics"] = +d["robotics"]
-					d["sec"] = +d["sec"]
-					d["soft"] = +d["soft"]
-					d["vision"] = +d["vision"]
-					d["visualization"] = +d["visualization"]
-					d["bed"] = +d["bed"]
-				})
-
-				selected_row = null
-				if(name == ""){
-					selected_row = csv.filter(d => d.Name == "Georgia Institute of Technology")[0]
-				} else {
-					selected_row = csv.filter(d => d.Name == name)[0]
-				}
-				
-				data = []
-				values.map((d, i) => {
-					data.push({name : names[i], value : selected_row[d]})
-				})
-
-				let arcs = svg.selectAll(".arc")
-				.data(pie(data))
-
-				arcs.transition()
-					.duration(750)
-					.attrTween("d", arcTween)
-					// .append("title")
-					// 	.text(d => `${d.data.name}: ${d.data.value.toLocaleString()}`)					
-
-				arcs.enter()
-					.append("path")
-					.attr("class", "arc")
-					.attr("fill", d => color(d.data.name))
-					.attr("d", arc)
-					.each(function(d) { this._current = d; })		
-					.append("title")
-						.text(d => `${d.data.name}: ${d.data.value.toLocaleString()}`)					
-				
-				let arcTexts = svg.selectAll(".arcText")
-				.data(pie(data))
-
-				arcTexts.transition()
-					.duration(750)
-					.attr("transform", d => `translate(${arcLabel.centroid(d)})`)
-						
-				arcTexts.enter()
-					.append("text")
-					.attr("class", "arcText")
-					.attr("transform", d => `translate(${arcLabel.centroid(d)})`)
-					.call(text => text.append("tspan")
-						.attr("y", "-0.4em")
-						.attr("font-color", "black")
-						.attr("font-weight", "bold")
-						.text(d => d.data.name))
-					// .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
-					// 	.attr("x", 0)
-					// 	.attr("y", "0.7em")
-					// 	.attr("fill-opacity", 0.7)
-					// 	.text(d => d.data.value.toLocaleString()));
-
-				// svg.append("g")
-				// 	
-				// .selectAll("path")
-				// .data(pie(data))
-				// .join("path")
-				// 	.attr("fill", d => color(d.data.name))
-				// 	.attr("d", arc)
-
-				// svg.append("g")
-				// 	.attr("font-family", "sans-serif")
-				// 	.attr("font-size", 12)
-				// 	.attr("text-anchor", "middle")
-				// .selectAll("text")
-				// .data(pie(data))
-				// .join("text")
-				// 	.attr("transform", d => `translate(${arcLabel.centroid(d)})`)
-				// 	.call(text => text.append("tspan")
-				// 		.attr("y", "-0.4em")
-				// 		//.attr("font-weight", "bold")
-				// 		.text(d => d.data.name))
-				// 	.call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
-				// 		.attr("x", 0)
-				// 		.attr("y", "0.7em")
-				// 		.attr("fill-opacity", 0.7)
-				// 		.text(d => d.data.value.toLocaleString()));
-			}
-			
-			function arcTween(a) {
-				var i = d3.interpolate(this._current, a);
-				this._current = i(0);
-				return function(t) {
-					return arc(i(t));
-				};
-			}
-
-			pieChart.update = update;
-		}
-
+		
 		</script>
 	</body>
 </html> 
