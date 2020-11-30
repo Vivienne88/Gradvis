@@ -186,7 +186,7 @@
 			<div class="row">
 				<div class="col-12">
 					<svg id="chart" width="700" height="800"></svg>
-					<svg id="barChart" width="700" height="800"></svg>	
+					<svg id="barChart" width="750" height="800"></svg>	
 					<svg id="mapChart" width="700" height="387"></svg>
 					<svg id = "spiderChart" width = "700", height = "387"></svg>	
 				</div>
@@ -794,7 +794,7 @@
 			let names = [...new Set(csv.map(d => d.Name))]
 			
 			let svg = d3.select("#barChart"),
-				margin = {top: 35, left: 80, bottom: 120, right: 0},
+				margin = {top: 35, left: 80, bottom: 120, right: 50},
 				width = +svg.attr("width") - margin.left - margin.right,
 				height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -812,7 +812,15 @@
 			var yAxis = svg.append("g")
 				.attr("transform", `translate(${margin.left},0)`)
 				.attr("class", "y-axis")
-			
+
+			var keys = ['Students Score', 'Tuition($) Score', 'Score', 'Student/Faculty Ratio Score', 'Master Acceptance Score'
+				, 'Master Applicants Score', 'Phd Acceptance Score', 'Phd Applicants Score', 'ai Score', 'mlmining Score'
+				, 'act Score', 'mod Score', 'visualization Score']
+
+			var z = d3.scaleOrdinal()
+    			.range(d3.schemeCategory10)
+				.domain(keys);
+
 			update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 0);
 			function update(key, color, GPA, TOEFL, GRE, rank, sort, scale, speed) {
 				console.log(scale)
@@ -918,6 +926,43 @@
 						.style("font-size", "16px") 
 						.style("text-decoration", "underline")  
 						.text(d => d);
+
+					let size = 10
+					let x_position = 570
+					let y_position = 10
+					let legend_dots = svg.selectAll(".legend_dots")
+						.data([key])
+
+					legend_dots.transition()
+						.duration(speed)
+						.style("fill", function(d){return z(d)})
+
+					legend_dots.enter()
+						.append("rect")
+						.attr("class", "legend_dots")
+						.attr("x", x_position)
+						.attr("y", function(d,i){ return y_position + i*(size+5)})
+						.attr("width", size)
+						.attr("height", size)
+						.style("fill", function(d){ return z(d)})
+
+					let legend_labels = svg.selectAll(".legend_labels")
+						.data([titleKey])
+
+					legend_labels.transition()
+						.duration(speed)
+						.style("fill", d => z(d))
+						.text(d => d)
+
+					legend_labels.enter()
+						.append("text")
+							.attr("class", "legend_labels")
+							.attr("x", x_position + size*1.2)
+							.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
+							.style("fill", d => z(d))
+							.text(function(d){ return d})
+							.attr("text-anchor", "left")
+							.style("alignment-baseline", "middle")					
 				}
 			}
 			barChart.update = update;			
