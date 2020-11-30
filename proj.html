@@ -185,8 +185,8 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-12">
-					<svg id="chart" width="700" height="800"></svg>
-					<svg id="barChart" width="750" height="800"></svg>	
+					<svg id="chart" width="730" height="800"></svg>
+					<svg id="barChart" width="730" height="800"></svg>	
 					<svg id="mapChart" width="700" height="387"></svg>
 					<svg id = "spiderChart" width = "700", height = "387"></svg>	
 				</div>
@@ -254,7 +254,7 @@
 			var names = [...new Set(csv.map(d => d.Name))]
 
 			var svg = d3.select("#chart"),
-				margin = {top: 35, left: 80, bottom: 120, right: 0},
+				margin = {top: 35, left: 80, bottom: 120, right: 50},
 				width = +svg.attr("width") - margin.left - margin.right,
 				height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -396,10 +396,13 @@
 				
 				d3.selectAll("g.layer")
 					.on('mouseenter', function(e, k) {
-						console.log(k)
 						tmp_color = this.getAttribute('fill')
 						d3.select(this)
 							.attr("fill", "black")
+
+						layer = this.getAttribute('id')
+						key = layer.slice(0, -6)
+						update_selectedAttribute(key, 10);
 					})
 					.on('mousedown', function(){
 						sort_color = tmp_color;
@@ -409,6 +412,9 @@
 						console.log(k)
 						d3.select(this)
 							.attr('fill', tmp_color)
+
+						svg.selectAll(".attribute_dots").remove()
+						svg.selectAll(".attribute_labels").remove()
 					})
 
 				// layer 관련 추가 코드
@@ -640,7 +646,69 @@
 						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
 					}
 				}
-			}		
+			}
+
+			function update_selectedAttribute(key, speed){
+				titleKey = key;
+				if(titleKey == "ai"){
+					titleKey = "Artificial Intelligence"
+				} else if(titleKey == "mlmining"){
+					titleKey = "Machine Learning"
+				} else if(titleKey == "act"){
+					titleKey = "Theory"
+				} else if(titleKey == "mod") {
+					titleKey = "Database"
+				} else if(titleKey == "visualization"){
+					titleKey = "Visualization"
+				} else if(titleKey == "ai Score"){
+					titleKey = "Artificial Intelligence Score"
+				} else if(titleKey == "mlmining Score"){
+					titleKey = "Machine Learning Score"
+				} else if(titleKey == "act Score"){
+					titleKey = "Theory Score"
+				} else if(titleKey == "mod Score") {
+					titleKey = "Database Score"
+				} else if(titleKey == "visualization Score"){
+					titleKey = "Visualization Score"
+				}
+
+				let size = 10
+				let x_position = 570
+				let y_position = 10
+				let attribute_dots = svg.selectAll(".attribute_dots")
+					.data([key])
+
+				attribute_dots.transition()
+					.duration(speed)
+					.style("fill", function(d){return z(d)})
+
+				attribute_dots.enter()
+					.append("rect")
+					.attr("class", "attribute_dots")
+					.attr("x", x_position)
+					.attr("y", function(d,i){ return y_position + i*(size+5)})
+					.attr("width", size)
+					.attr("height", size)
+					.style("fill", function(d){ return z(d)})
+
+				let attribute_labels = svg.selectAll(".attribute_labels")
+					.data([titleKey])
+
+				attribute_labels.transition()
+					.duration(speed)
+					.style("fill", d => z(d))
+					.text(d => d)
+
+				attribute_labels.enter()
+					.append("text")
+						.attr("class", "attribute_labels")
+						.attr("x", x_position + size*1.2)
+						.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
+						.style("fill", d => z(d))
+						.text(function(d){ return d})
+						.attr("text-anchor", "left")
+						.style("alignment-baseline", "middle")	
+			}
 
 			GPA_slider.oninput = function() {
 				if(this.value == 0){
