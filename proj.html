@@ -397,8 +397,12 @@
 				d3.selectAll("g.layer")
 					.on('mouseenter', function(e, k) {
 						tmp_color = this.getAttribute('fill')
-						d3.select(this)
-							.attr("fill", "black")
+
+						group = d3.select(this)._groups[0]
+						childs = group[0].childNodes;
+						for(i=0; i<childs.length; i++){
+							childs[i].setAttribute("stroke-width", "1.5")
+						}
 
 						layer = this.getAttribute('id')
 						key = layer.slice(0, -6)
@@ -406,12 +410,16 @@
 					})
 					.on('mousedown', function(){
 						sort_color = tmp_color;
-						//console.log(sort_color)
 					})
 					.on('mouseleave', function(e, k) {
-						console.log(k)
 						d3.select(this)
 							.attr('fill', tmp_color)
+
+						group = d3.select(this)._groups[0]
+						childs = group[0].childNodes;
+						for(i=0; i<childs.length; i++){
+							childs[i].setAttribute("stroke-width", "0.1")
+						}
 
 						svg.selectAll(".attribute_dots").remove()
 						svg.selectAll(".attribute_labels").remove()
