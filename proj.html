@@ -188,7 +188,7 @@
 					<svg id="chart" width="730" height="800"></svg>
 					<svg id="barChart" width="730" height="800"></svg>	
 					<svg id="mapChart" width="690" height="387"></svg>
-					<svg id = "spiderChart" width = "770", height = "387"></svg>	
+					<svg id="spiderChart" width="770", height="387"></svg>
 				</div>
 			</div>
 		</div>
@@ -210,6 +210,7 @@
 			g.attr("transform",d3.event.transform);
 		}
 		*/
+
 		GPA_slider = document.getElementById("myGPA")
 		GPA_ouput = document.getElementById("GPA_value")
 
@@ -310,13 +311,14 @@
 				.attr("transform", `translate(${margin.left},0)`)
 				.attr("class", "y-axis")
 
-			var z = d3.scaleOrdinal()
-    			.range(d3.schemeCategory10)
-				.domain(keys);
-
 			// var z = d3.scaleOrdinal()
-			// 	.range(["steelblue", "darkorange", "lightblue"])
+    		// 	.range(d3.schemeCategory10)
 			// 	.domain(keys);
+
+			var z = d3.scaleOrdinal()
+				//.range(["steelblue", "darkorange", "lightblue"])
+				.range(["#eb002f", "#faee00", "#000000", "#ff66ae", "#7a7f75", "#8a1b00", "#1ac700", "#0029fa", "#ffffff", "#33f9ff", "#ff8533", "#85008a", "lightblue"])
+				.domain(keys);
 
 			update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 0)
 
@@ -725,6 +727,8 @@
 					.attr("class", "attribute_dots")
 					.attr("x", x_position)
 					.attr("y", function(d,i){ return y_position + i*(size+5)})
+					.attr("stroke", "black")
+					.attr("stroke-width", "1.0")
 					.attr("width", size)
 					.attr("height", size)
 					.style("fill", function(d){ return z(d)})
@@ -734,7 +738,7 @@
 
 				attribute_labels.transition()
 					.duration(speed)
-					.style("fill", d => z(d))
+					//.style("fill", d => z(d))
 					.text(d => d)
 
 				attribute_labels.enter()
@@ -742,7 +746,8 @@
 						.attr("class", "attribute_labels")
 						.attr("x", x_position + size*1.2)
 						.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
-						.style("fill", d => z(d))
+						//.style("fill", d => z(d))
+						.style("fill", "black")
 						.text(function(d){ return d})
 						.attr("text-anchor", "left")
 						.style("alignment-baseline", "middle")	
@@ -959,8 +964,13 @@
 				, 'Master Applicants Score', 'Phd Acceptance Score', 'Phd Applicants Score', 'ai Score', 'mlmining Score'
 				, 'act Score', 'mod Score', 'visualization Score']
 
+			// var z = d3.scaleOrdinal()
+    		// 	.range(d3.schemeCategory10)
+			// 	.domain(keys);
+
 			var z = d3.scaleOrdinal()
-    			.range(d3.schemeCategory10)
+				//.range(["steelblue", "darkorange", "lightblue"])
+				.range(["#eb002f", "#faee00", "#000000", "#ff66ae", "#7a7f75", "#8a1b00", "#1ac700", "#0029fa", "#ffffff", "#33f9ff", "#ff8533", "#85008a", "lightblue"])
 				.domain(keys);
 
 			update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 0);
@@ -1009,7 +1019,8 @@
 
 				bar.exit().remove();
 				
-				bar.enter().append("rect")
+				if(init == false){
+					bar.enter().append("rect")
 					.attr("class", "bar")
 					.attr("fill", color)
 					.merge(bar)
@@ -1019,6 +1030,20 @@
 					.attr("y", d => y(d[key]))
 					.attr("height", d => y(0) - y(d[key]))
 					.attr("fill", color)
+				} else {
+					bar.enter().append("rect")
+					.attr("class", "bar")
+					.attr("fill", color)
+					.merge(bar)
+					.attr("width", x.bandwidth())
+				.transition().duration(speed)
+					.attr("x", d => x(d.Name))
+					.attr("y", d => y(d[key]))
+					.attr("height", d => y(0) - y(d[key]))
+					.attr("fill", color)
+					.attr("stroke", color == "#000000" ? "white" : "black")
+					.attr("stroke-width", "1.0")
+				}
 
 				xAxis.selectAll("text")	
 					.style("text-anchor", "end")
@@ -1089,6 +1114,8 @@
 						.attr("class", "legend_dots")
 						.attr("x", x_position)
 						.attr("y", function(d,i){ return y_position + i*(size+5)})
+						.attr("stroke", "black")
+						.attr("stroke-width", "1.0")
 						.attr("width", size)
 						.attr("height", size)
 						.style("fill", function(d){ return z(d)})
@@ -1098,7 +1125,7 @@
 
 					legend_labels.transition()
 						.duration(speed)
-						.style("fill", d => z(key))
+						//.style("fill", d => z(key))
 						.text(d => d)
 
 					legend_labels.enter()
@@ -1106,7 +1133,8 @@
 							.attr("class", "legend_labels")
 							.attr("x", x_position + size*1.2)
 							.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
-							.style("fill", d => z(d))
+							//.style("fill", d => z(d))
+							.style("fill", "black")
 							.text(function(d){ return d})
 							.attr("text-anchor", "left")
 							.style("alignment-baseline", "middle")					
