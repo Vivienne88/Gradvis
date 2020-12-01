@@ -429,13 +429,19 @@
 					.on('mouseenter', function(e, k) {
 						tmp_color = this.getAttribute('fill')
 
+						layer = this.getAttribute('id')
+						tmp_stroke = "black"
+						if(layer == "Score layer"){
+							tmp_stroke = "white"
+						}
+
 						group = d3.select(this)._groups[0]
 						childs = group[0].childNodes;
 						for(i=0; i<childs.length; i++){
+							childs[i].setAttribute("stroke", tmp_stroke)
 							childs[i].setAttribute("stroke-width", "1.5")
 						}
 
-						layer = this.getAttribute('id')
 						key = layer.slice(0, -6)
 						update_selectedAttribute(key, 10);
 					})
@@ -449,6 +455,7 @@
 						group = d3.select(this)._groups[0]
 						childs = group[0].childNodes;
 						for(i=0; i<childs.length; i++){
+							childs[i].setAttribute("stroke", "black")
 							childs[i].setAttribute("stroke-width", "0.1")
 						}
 
@@ -1019,6 +1026,7 @@
 
 				bar.exit().remove();
 				
+				console.log(key)
 				if(init == false){
 					bar.enter().append("rect")
 					.attr("class", "bar")
