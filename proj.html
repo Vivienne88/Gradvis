@@ -224,7 +224,8 @@
 		let mapChartCircleSize;
 		let tmp_color;
 		let sort_color = 'white';
-		let init = false
+		let init = false;
+		let mapTransform = {x: 0, y: 0};
 
 		// spider chart 용 stack
 		let university_name_stack = new Array;
@@ -448,27 +449,12 @@
 				bars.enter().append("rect")
 					.merge(bars)
 					.attr("width", x.bandwidth())
-					.attr("class", d => (d.data.Name).replace(/\ /g, '-').split("(")[0].split("&")[0]) // class 잡음
 				.transition().duration(speed)
 					.attr("x", d => x(d.data.Name))
 					.attr("y", d => y(d[1]))
 					.attr("height", d => y(d[0]) - y(d[1]))
 					.attr('stroke', 'black')
 					.attr('stroke-width', '0.1');
-
-				let univNames = [...new Set(csv.map(d => (d.Name).replace(/\ /g, '-').split("(")[0].split("&")[0]))]
-				for (let i = 0; i < univNames.length; i++) {
-					mapChartKey = univNames[i];
-					d3.selectAll("."+mapChartKey)
-						.on('mouseenter', function() {
-							mapChartKey = univNames[i];
-							mapChart.update(mapChartKey, "black", 10)
-						})
-						.on('mouseleave', function() {
-							mapChartKey = univNames[i];
-							mapChart.update(mapChartKey, "red", 3)
-						})
-				}
 
 				var text = svg.selectAll(".text")
 					.data(data, d => d.Name);
@@ -492,11 +478,15 @@
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)")
 					.on("mouseover", function(d,k){
+						mapChartKey = k.replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
+						mapChart.mapMouseenter(mapChartKey, "black", 10)
 						if (university_name_stack.length<2 ){ // 0개나 1개 선택한 경우 새로 마우스가 올라가는 text들은 bold로 보이도록 한다. (이미 bold인 녀석들은 변화가 없음)
 							d3.select(this).style("font-weight", "bold");
 						}					
 					})
 					.on("mouseout", function(d,k){
+						mapChartKey = k.replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
+						mapChart.mapMouseleave(mapChartKey, "red", 3)
 						if (university_name_stack.length === 0){ // 하나도 스택에 안들어간상태면 나오면서 bold 해제하면 됨
 							d3.select(this).style("font-weight", "normal");
 						}
@@ -1052,8 +1042,8 @@
 		/*
 			map chart
 		*/
-		mapChart()
-		function mapChart()
+		d3.csv("uni3.csv").then(d => mapChart(d));
+		function mapChart(csv)
         {
             var width = 650,
                 height = 400;
@@ -1070,7 +1060,18 @@
             var path = d3.geoPath()
                 .projection(projection);
 
-            var g = svg.append("g");
+			var g = svg.append("g");
+			
+			function mapMouseenter(mapChartKey, mapChartColor, mapChartCircleSize) {
+				d3.select("#"+mapChartKey)
+					.attr("r", mapChartCircleSize)
+					.style("fill", mapChartColor)
+			}
+			function mapMouseleave(mapChartKey, mapChartColor, mapChartCircleSize) {
+				d3.select("#"+mapChartKey)
+					.attr("r", mapChartCircleSize)
+					.style("fill", mapChartColor)
+			}
 
 			update(mapChartKey, mapChartColor, mapChartCircleSize)
 			function update(mapChartKey, mapChartColor, mapChartCircleSize) {
@@ -1084,11 +1085,8 @@
 						.attr("fill", 'grey')
 						.attr("d", path);
 
-					// load and display the cities
-					//d3.csv("cities_2.csv").then(function(data) {
-					d3.csv("uni3.csv").then(function(data) {
 						g.selectAll("circle")
-							.data(data)
+							.data(csv)
 							.enter()
 							.append("circle")
 							.attr("cx", function(d) {
@@ -1100,14 +1098,10 @@
 							.text(function(d) { return d.Name } )
 							.attr("r", 3)
 							.style("fill", "red")
-							.attr("id", d => (d.Name).replace(/\ /g, '-').split("(")[0].split("&")[0]) // id 잡음
-
-						d3.select("#"+mapChartKey)
-							.attr("r", mapChartCircleSize)
-							.style("fill", mapChartColor)
+							.attr("id", d => (d.Name).replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-'))
 
 						g.selectAll("text")
-							.data(data)
+							.data(csv)
 							.enter()
 							.append("text") // append text
 							.attr("x", function(d) {
@@ -1126,136 +1120,138 @@
 						g.selectAll("text")
 							.on('mouseover', function() {
 								d3.select(this)
+									.attr('font-size', '12px')
+									.style("fill", "blue");
+
+								let infoWidth = 390;
+								let infoHeight = 270;
+								
+								let xMaps = csv.map(csv => projection([csv.longitude, csv.latitude])[0])
+								let yMaps = csv.map(csv => projection([csv.longitude, csv.latitude])[1])
+
+								textDatas = []
+								for (let i=0; i<xMaps.length; i++) {
+									if ((+this.x.baseVal[0].value).toPrecision(4) == (+xMaps[i]).toPrecision(4)) {
+										textDatas.push(
+											csv[i]["Name"],
+											csv[i]["GPA"],
+											csv[i]["GRE"],
+											csv[i]["Master Acceptance"],
+											csv[i]["Master Applicants"],
+											csv[i]["Phd Acceptance"],
+											csv[i]["Phd Applicants"],
+											csv[i]["Rank"],
+											csv[i]["Score"],
+											csv[i]["Student/Faculty Ratio"],
+											csv[i]["Students"],
+											csv[i]["TOEFL"],
+											csv[i]["Tuition($)"],
+											xMaps[i],
+											yMaps[i]
+										)
+										break;
+									}
+								}
+								let xBase = textDatas[13]
+								let yBase = textDatas[14]							
+
+								g.append('filter')
+									.attr('id', 'mapShadow')
+									.append('feDropShadow')
+									.attr('flood-opacity', 0.8)
+									.attr('dx', 1)
+									.attr('dy', 1)
+									.attr('stdDeviation', 3);
+								
+								g.append("rect")
+									.attr("id", "mapDetailView")
+									.attr("x", xBase - infoWidth/2 + mapTransform.x)
+									.attr("y", yBase - infoHeight - 10 + mapTransform.y)
+									.attr("width", infoWidth)
+									.attr("height", infoHeight)
+									.attr("fill","white")
+									.attr('filter', 'url(#mapShadow)');
+
+								let xTextBase = xBase - infoWidth/2 + 10 + mapTransform.x;
+								let yTextBase = yBase - infoHeight + 10 + mapTransform.y;
+								let stepSize = 20;
+
+								g.append("text")
+									.attr("id", "mapdetailText")
+									.attr("x", xTextBase)
+									.attr("y", yTextBase)
+									.attr("font-size", "12px")
+									.attr("font-family", "sans-serif")
+									
 									.append("tspan")
-									.attr("dy", "-1.0em")
-									.text(d => ["NAME: " + d.Name])	
-									.style("fill", "blue") // fill the text with the colour black
-									.attr("font-size","10px")							
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})									
-								d3.select(this)
+									.text("Name: " + textDatas[0])	
 									.append("tspan")
-    								.text(d => ["RANK: " + d.Rank])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("GPA: " + textDatas[1])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + stepSize)
 									.append("tspan")
-    								.text(d => ["TOEFL: " + d.TOEFL])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("GRE: " + textDatas[2])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 2*stepSize)
 									.append("tspan")
-    								.text(d => ["GRE: " + d.GRE])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Master Acceptance: " + textDatas[3])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 3*stepSize)
 									.append("tspan")
-    								.text(d => ["Students: " + d.Students])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Master Applicants: " + textDatas[4])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 4*stepSize)
 									.append("tspan")
-    								.text(d => ["Tuition($): " + d['Tuition($)']])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Phd Acceptance: " + textDatas[5])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 5*stepSize)
 									.append("tspan")
-    								.text(d => ["Score: " + d['Score']])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Phd Applicants: " + textDatas[6])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 6*stepSize)
 									.append("tspan")
-    								.text(d => ["Student/Faculty Ratio: " + d['Student/Faculty Ratio']])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Rank: " + textDatas[7])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 7*stepSize)
 									.append("tspan")
-    								.text(d => ["Master Acceptance: " + d['Master Acceptance']])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Score: " + textDatas[8])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 8*stepSize)
 									.append("tspan")
-    								.text(d => ["Master Applicants: " + d['Master Applicants']])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Student/Faculty Ratio: " + textDatas[9])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 9*stepSize)
 									.append("tspan")
-    								.text(d => ["Phd Acceptance: " + d['Phd Acceptance']])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									})
-								d3.select(this)
+									.text("Students: " + textDatas[10])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 10*stepSize)
 									.append("tspan")
-    								.text(d => ["Phd Applicants: " + d['Phd Applicants']])
-									.attr("dy", "-1.0em")
-									.style("fill", "blue") // fill the text with the colour black
-									//.attr("text-anchor", "middle")
-									.attr("font-size","10px")
-									.attr("x", function(d) {
-										return projection([d.longitude, d.latitude])[0];
-									}) 							
+									.text("TOEFL: " + textDatas[11])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 11*stepSize)
+									.append("tspan")
+									.text("Tuition($): " + textDatas[12])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 12*stepSize)											
 							})
 							.on('mouseleave', function() {
 								d3.select(this)
-								.attr("dy", 0)
-								.style("fill", "black")
-								.attr("font-size","3px")
-								.attr('stroke-width', '0.1')
-								.text(function(d) {return d.Name;});
+									.attr("dy", 0)
+									.style("fill", "black")
+									.attr("font-size","3px")
+									.attr('stroke-width', '0.1')
+									.text(function(d) {return d.Name;});
+
+								d3.select(this).attr('fill', 'black');
+								//d3.selectAll('#mapDetailView').style("opacity", 0);
+								//d3.selectAll('#mapDetailText').style("opacity", 0);
+								d3.selectAll('#mapDetailView').remove();
+								d3.selectAll('#mapDetailText').remove();
 							})
-					});
 				});
 			}
+			mapChart.mapMouseleave = mapMouseleave;
+			mapChart.mapMouseenter = mapMouseenter;
 			mapChart.update = update;
 
             var zoom = d3.zoom()
@@ -1267,8 +1263,10 @@
                     .attr('transform', event.transform);
                     g.selectAll("text")
                     .attr('transform', event.transform);
+					g.selectAll("rect")
+                    .attr('transform', event.transform);
+					mapTransform = {x: event.transform.x, y: event.transform.y}
             });
-
             svg.call(zoom);
         }
 
