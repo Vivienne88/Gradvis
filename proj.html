@@ -1006,6 +1006,12 @@
 					let size = 10
 					let x_position = 570
 					let y_position = 10
+
+					if(Scale_ouput.innerHTML == "Original Scale" && key != "Score"){
+						key = key + " Score"
+						legend_color = z(key)
+					}
+
 					let legend_dots = svg.selectAll(".legend_dots")
 						.data([key])
 
@@ -1027,7 +1033,7 @@
 
 					legend_labels.transition()
 						.duration(speed)
-						.style("fill", d => z(d))
+						.style("fill", d => z(key))
 						.text(d => d)
 
 					legend_labels.enter()
