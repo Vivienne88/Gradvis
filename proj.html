@@ -188,7 +188,7 @@
 					<svg id="chart" width="730" height="800"></svg>
 					<svg id="barChart" width="730" height="800"></svg>	
 					<svg id="mapChart" width="700" height="387"></svg>
-					<svg id = "spiderChart" width = "700", height = "387"></svg>	
+					<svg id = "spiderChart" width = "770", height = "387"></svg>	
 				</div>
 			</div>
 		</div>
@@ -198,6 +198,18 @@
 		</select> -->
 
 		<script>
+
+		/*
+		var zoom = d3.zoom()
+  		.on("zoom", zoomed);
+
+		let s = d3.select("#container_fluid").call(zoom)
+		// trigger tha initial zoom with an initial transform.
+		s.call(zoom.transform,d3.zoomIdentity.scale(20).translate(-100,-100));
+		function zoomed() {
+			g.attr("transform",d3.event.transform);
+		}
+		*/
 		GPA_slider = document.getElementById("myGPA")
 		GPA_ouput = document.getElementById("GPA_value")
 
@@ -229,6 +241,7 @@
 
 		// spider chart 용 stack
 		let university_name_stack = new Array;
+		let obj = new Array(2);
 
 		// layer 변수들 추가
 		let students_score_layer;
@@ -258,6 +271,21 @@
 				margin = {top: 35, left: 80, bottom: 120, right: 50},
 				width = +svg.attr("width") - margin.left - margin.right,
 				height = +svg.attr("height") - margin.top - margin.bottom;
+
+			svg.on("click", function(d){
+				if (d.target.id === "chart") {
+					console.log(university_name_stack.length);
+					let len = university_name_stack.length;
+					for (let i = 0; i < len; i++){
+						university_name_stack.pop();
+						if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+						spiderChart.spiderChartRemove();
+						}
+					}
+				}
+			});
 
 			svg.append("text")
 				.attr("x", 50 + (width / 2))             
@@ -502,14 +530,21 @@
 						if (university_name_stack.length===0){ //하나도 선택되어있지 않은경우 클릭시
 							university_name_stack[0] = k;
 							console.log(university_name_stack);
+							obj[0]=d3.select(this);
+							console.log(obj);
 						}
 						else if (university_name_stack.length === 1){ // 하나 선택되어 있는 경우 클릭시
 							if (university_name_stack[0] === k){ // 그것이 이미 선택되어 bold처리된 대학이라면
 								console.log("selected school 1 eliminated");
 								university_name_stack.pop();
+								obj.pop();
+								console.log(obj);
 							}
 							else{ // 선택안된 대학을 선택했을 경우
 								university_name_stack[1] = k;
+								console.log(university_name_stack);
+								obj[1] = d3.select(this);
+								console.log(obj);
 								spiderChart.update(university_name_stack[0], university_name_stack[1], ["red", "green"]);
 							}
 						}
@@ -518,10 +553,15 @@
 								console.log("selected school 1 eliminated");
 								university_name_stack[0] = university_name_stack[1];
 								university_name_stack.pop();
+								obj[0] = obj[1];
+								obj.pop();
+								console.log(obj);
 							}
 							else if (university_name_stack[1] === k){
 								console.log("selected school 2 eliminated");
 								university_name_stack.pop();
+								obj.pop();
+								console.log(obj);
 							}
 						}
 					});
@@ -716,6 +756,15 @@
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
 			}
 
 			TOEFL_slider.oninput = function() {
@@ -726,6 +775,15 @@
 				}				
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
 			}			
 
 			GRE_slider.oninput = function() {
@@ -735,7 +793,16 @@
 					GRE_ouput.innerHTML = "Required";
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
-				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750) 
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
 			}	
 
 			Rank_slider.oninput = function() {
@@ -746,6 +813,15 @@
 				}
 				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
 				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
 			}	
 
 			Sort_slider.oninput = function() {
@@ -1275,7 +1351,7 @@
 		function spiderChart(csv){
 
 			var svg = d3.select("#spiderChart")
-				.style("background", "rgb(240,240,255)");
+				.style("background", "white");
 
 			let margin= {l: 60, r: 30, t: 30, b: 60 };
 			let keys = ["GPA", "TOEFL", "Master Acceptance", "Phd Acceptance", "Score", "Student/Faculty Ratio", "Tuition($)"];
@@ -1408,18 +1484,18 @@
 
 				// Content of labels
 				labels.append("rect")
-				.attr("x", 0).attr("y", 0)
+				.attr("x", -30).attr("y", function(d,i){ return i*(-10); })
 				.attr("width", 25).attr("height", 10)
-				.style("fill", (d, i) => d3.rgb("white"));
+				.style("fill", (d, i) => d3.rgb("black"));
 
 				labels.append("text")
-				.attr("x", 35).attr("y", 10)
-				.style("font-size", "0.9rem")
+				.attr("x", 8).attr("y", function(d,i){ return i*(-10) +9; })
+				.style("font-size", "0.7rem")
 				.text(d=>d);
 
 			update();
 
-			function update(schoolName1, schoolName2, colors){
+			function update(schoolName1, schoolName2, colors, keyset){
 				let selectedSchool = new Array(2);
 				let showData = new Array(2);
 				if ((typeof schoolName1 !== 'undefined')&&(typeof schoolName2 !== 'undefined')){ // 학교명이 2개주어졌을때
@@ -1446,6 +1522,21 @@
 					return;
 				}
 
+				if (typeof keyset !== 'undefined'){
+				let CompareKeys = ["GPA", "TOEFL", "Master Acceptance", "Phd Acceptance", "Score", "Student/Faculty Ratio", "Tuition($)"];
+				let realKeys = [];
+				for (let i = 0; i < keyset.length; i++){
+					if (CompareKeys.includes(keyset[i])){
+						realKeys.push(keyset[i]);
+					}
+				}
+				console.log(realKeys);
+					// 새로 바꾸게 되는 key의 validation check
+					if (realKeys.length >= 3){
+						keys = realKeys;
+					}
+				}
+				console.log(keys);
 
 				const scales = scalesFunc(sideLength, selectedSchool, showData);
 
@@ -1486,7 +1577,15 @@
    				.on('mouseover', function(d,k){
 					d3.select(this).attr('fill', 'blue');
 					let c_name = showData.map(function(dat){return dat['Name'];});
-					let c_value = showData.map(function(dat) { return dat[k]; });
+					let c_value = showData.map(function(dat) { 
+						console.log(dat[k]);
+						if (dat[k] == 0){
+							return "None";
+						}
+						else{
+							return dat[k];
+						}
+					 });
 					let c_text = c_name[1] + " : " + c_value[1] + ", " + c_name[0] + " : " + c_value[0];
 					d3.select('#tooltip').style('opacity', 1).text(c_text);
 
@@ -1510,14 +1609,28 @@
 
 				// Content of labels
 				labels.append("rect")
-				.attr("x", 0).attr("y", 0)
+				.attr("x", -30).attr("y", function(d,i){ return i*(-10); })
 				.attr("width", 25).attr("height", 10)
 				.style("fill", (d, i) => d3.rgb(colors[i]));
 
+				let univNameLen;
 				labels.append("text")
-				.attr("x", 35).attr("y", 10)
-				.style("font-size", "0.9rem")
-				.text(d=>d)
+				.attr("x", 8).attr("y", function(d,i){ return i*(-10) +9; })
+				.style("font-size", "0.7rem")
+				.text(function(d){ 
+					/*
+					univNameLen = d.length;
+					console.log(univNameLen);
+					if (univNameLen >= 30){
+						cutStr = d.substring(0, 40);
+						console.log(cutStr);
+						cutStr = cutStr + "...";
+						return cutStr;
+					}
+					else{ return d; }
+					*/
+					return d;
+				})
 				.on('mouseover', function(d,k){
 					d3.select(this).attr('fill', 'red');
 					for (let i=0; i<showData.length; i++){
@@ -1532,7 +1645,7 @@
 
 							svg.append("rect")
 							.attr("id", "detailView")
-							.attr("x", 450)
+							.attr("x", 420)
 							.attr("y", 20)
 							.attr("width", 250)
 							.attr("height", 250)
@@ -1550,61 +1663,67 @@
 							}
 							let tex = svg.append("text")
 								.attr("id", "detailText")
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 30)
 								.attr("font-size", "13px")
 								.attr("font-family", "sans-serif")
 								.append("tspan")
 								.text(function(){return "Name : " + showName})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 40)
 								.append("tspan")
-								.text(function(){return "GPA : " + showData[i]["GPA"]})
-								.attr("x", 470)
+								.text(function(){
+									let showGPA=showData[i]["GPA"];
+									if (showData[i]["GPA"] == 0) {
+										showGPA = "None";
+									}
+								return "GPA : " + showGPA;
+								})
+								.attr("x", 430)
 								.attr("y", 58)
 								.append("tspan")
 								.text(function(){return "GRE : " + showData[i]["GRE"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 76)
 								.append("tspan")
-								.text(function(){return "Master Acceptance : " + showData[i]["Master Acceptance"]})
-								.attr("x", 470)
+								.text(function(){return "Master Acceptance : " + showData[i]["Master Acceptance"] + "%"})
+								.attr("x", 430)
 								.attr("y", 94)
 								.append("tspan")
 								.text(function(){return "Master Applicants : " + showData[i]["Master Applicants"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 112)
 								.append("tspan")
-								.text(function(){return "Phd Acceptance : " + showData[i]["Phd Acceptance"]})
-								.attr("x", 470)
+								.text(function(){return "Phd Acceptance : " + showData[i]["Phd Acceptance"] + "%"})
+								.attr("x", 430)
 								.attr("y", 130)
 								.append("tspan")
 								.text(function(){return "Phd Applicants : " + showData[i]["Phd Applicants"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 148)
 								.append("tspan")
 								.text(function(){return "Rank : " + showData[i]["Rank"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 166)
 								.append("tspan")
 								.text(function(){return "Score : " + showData[i]["Score"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 184)
 								.append("tspan")
-								.text(function(){return "Student/Faculty Ratio : " + showData[i]["Student/Faculty Ratio"]})
-								.attr("x", 470)
+								.text(function(){return "Student/Faculty Ratio : " + showData[i]["Student/Faculty Ratio"] + " : 1"})
+								.attr("x", 430)
 								.attr("y", 202)
 								.append("tspan")
 								.text(function(){return "Students : " + showData[i]["Students"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 220)
 								.append("tspan")
 								.text(function(){return "TOEFL : " + showData[i]["TOEFL"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 238)
 								.append("tspan")
 								.text(function(){return "Tuition($) : " + showData[i]["Tuition($)"]})
-								.attr("x", 470)
+								.attr("x", 430)
 								.attr("y", 256)
 			
   						}
@@ -1615,9 +1734,32 @@
 				d3.selectAll('#detailView').style("opacity", 0);
 				d3.selectAll('#detailText').style("opacity", 0);
 			});
-			
+
 			}
 			spiderChart.update = update;
+			function spiderChartRemove(){
+				svg.selectAll("g.spiders").remove();
+				svg.selectAll("g.labels").remove();
+				var labels = svg.selectAll("g.labels")
+				.data(tmpSchool).enter().append("g")
+				.classed("labels", true)
+				.attr("transform", (d, i) => (`translate(${width * 0.5}, ${height - margin.b - (i*20)})`))
+
+
+				// Content of labels
+				labels.append("rect")
+				.attr("x", -30).attr("y", function(d,i){ return i*(-10); })
+				.attr("width", 25).attr("height", 10)
+				.style("fill", (d, i) => d3.rgb("black"));
+
+				labels.append("text")
+				.attr("x", 8).attr("y", function(d,i){ return i*(-10) +9; })
+				.style("font-size", "0.7rem")
+				.text(d=>d);
+			}
+			spiderChart.spiderChartRemove = spiderChartRemove;
+			
+				
 		}
 		</script>
 	</body>
