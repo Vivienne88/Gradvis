@@ -1042,7 +1042,7 @@
 					.attr("height", d => y(0) - y(d[key]))
 					.attr("fill", color)
 					.attr("stroke", color == "#000000" ? "white" : "black")
-					.attr("stroke-width", "1.0")
+					.attr("stroke-width", color == "#000000" ? "0.5" : "1.0")
 				}
 
 				xAxis.selectAll("text")	
