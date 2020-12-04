@@ -1298,7 +1298,13 @@
 									.append("tspan")
 									.text("Name: " + textDatas[0])	
 									.append("tspan")
-									.text("GPA: " + textDatas[1])
+									.text(function(){
+									let showGPA = textDatas[1];
+										if (textDatas[1] == 0) {
+											showGPA = "None";
+										}
+										return "GPA : " + showGPA;
+									})
 									.attr("x", xTextBase)
 									.attr("y", yTextBase + stepSize)
 									.append("tspan")
@@ -1306,7 +1312,7 @@
 									.attr("x", xTextBase)
 									.attr("y", yTextBase + 2*stepSize)
 									.append("tspan")
-									.text("Master Acceptance: " + textDatas[3])
+									.text("Master Acceptance: " + textDatas[3] + "%")
 									.attr("x", xTextBase)
 									.attr("y", yTextBase + 3*stepSize)
 									.append("tspan")
@@ -1314,7 +1320,7 @@
 									.attr("x", xTextBase)
 									.attr("y", yTextBase + 4*stepSize)
 									.append("tspan")
-									.text("Phd Acceptance: " + textDatas[5])
+									.text("Phd Acceptance: " + textDatas[5] + "%")
 									.attr("x", xTextBase)
 									.attr("y", yTextBase + 5*stepSize)
 									.append("tspan")
@@ -1330,7 +1336,7 @@
 									.attr("x", xTextBase)
 									.attr("y", yTextBase + 8*stepSize)
 									.append("tspan")
-									.text("Student/Faculty Ratio: " + textDatas[9])
+									.text(function(){return "Student/Faculty Ratio : " + textDatas[9] + " : 1"})
 									.attr("x", xTextBase)
 									.attr("y", yTextBase + 9*stepSize)
 									.append("tspan")
@@ -1344,7 +1350,7 @@
 									.append("tspan")
 									.text("Tuition($): " + textDatas[12])
 									.attr("x", xTextBase)
-									.attr("y", yTextBase + 12*stepSize)											
+									.attr("y", yTextBase + 12*stepSize)								
 							})
 							.on('mouseleave', function() {
 								d3.select(this)
