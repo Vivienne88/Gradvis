@@ -517,6 +517,9 @@
 					.attr("height", size)
 					.style("fill", function(d){ return z(d)})
 
+				stacked_legend_dots.exit()
+					.remove()
+
 				transfer_keys = keys.map(d => transfer_key(d))
 				let stacked_legend_labels = svg.selectAll(".stacked_legend_labels")
 					.data(transfer_keys)
@@ -534,6 +537,9 @@
 						.text(function(d){ return d})
 						.attr("text-anchor", "left")
 						.style("alignment-baseline", "middle")	
+
+				stacked_legend_labels.exit()
+					.remove()
 
 				// layer 관련 추가 코드
 				students_score_layer = document.getElementById("Students Score layer")
@@ -1088,6 +1094,8 @@
 					data.sort((a, b) => a[key] - b[key])
 				}
 				
+				console.log(data)
+
 				y.domain([0, d3.max(data, d => d[key])]).nice() // score 컬럼에서 max가 88이 나옴
 				//console.log(d3.max(data, d => d[key]))
 
