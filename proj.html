@@ -236,8 +236,7 @@
 		let mapChartColor;
 		let mapChartCircleSize;
 		let tmp_color;
-		let sort_color = 'white';
-		let init = false;
+		let sort_color = '#000000';
 		let mapTransform = {x: 0, y: 0};
 
 		// spider chart 용 stack
@@ -787,7 +786,8 @@
 					//.style("fill", d => z(d))
 					.text(d => d)
 
-				attribute_labels.enter()
+				attribute_labels
+					.enter()
 					.append("text")
 						.attr("class", "attribute_labels")
 						.attr("x", x_position + size*1.2)
@@ -1066,21 +1066,11 @@
 				bar.exit().remove();
 				
 				console.log(key)
-				if(init == false){
-					bar.enter().append("rect")
+				bar.enter().append("rect")
 					.attr("class", "bar")
 					.attr("fill", color)
-					.merge(bar)
-					.attr("width", x.bandwidth())
-				.transition().duration(speed)
-					.attr("x", d => x(d.Name))
-					.attr("y", d => y(d[key]))
-					.attr("height", d => y(0) - y(d[key]))
-					.attr("fill", color)
-				} else {
-					bar.enter().append("rect")
-					.attr("class", "bar")
-					.attr("fill", color)
+					.attr("stroke", color == "#000000" ? "white" : "black")
+					.attr("stroke-width", color == "#000000" ? "0.5" : "1.0")
 					.merge(bar)
 					.attr("width", x.bandwidth())
 				.transition().duration(speed)
@@ -1090,7 +1080,6 @@
 					.attr("fill", color)
 					.attr("stroke", color == "#000000" ? "white" : "black")
 					.attr("stroke-width", color == "#000000" ? "0.5" : "1.0")
-				}
 
 				xAxis.selectAll("text")	
 					.style("text-anchor", "end")
@@ -1098,94 +1087,91 @@
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)");		
 
-				if(init == false){
-					init = true
-				} else {
-					titleKey = key;
-					if(titleKey == "ai"){
-						titleKey = "Artificial Intelligence"
-					} else if(titleKey == "mlmining"){
-						titleKey = "Machine Learning"
-					} else if(titleKey == "act"){
-						titleKey = "Theory"
-					} else if(titleKey == "mod") {
-						titleKey = "Database"
-					} else if(titleKey == "visualization"){
-						titleKey = "Visualization"
-					} else if(titleKey == "ai Score"){
-						titleKey = "Artificial Intelligence Score"
-					} else if(titleKey == "mlmining Score"){
-						titleKey = "Machine Learning Score"
-					} else if(titleKey == "act Score"){
-						titleKey = "Theory Score"
-					} else if(titleKey == "mod Score") {
-						titleKey = "Database Score"
-					} else if(titleKey == "visualization Score"){
-						titleKey = "Visualization Score"
-					}
-
-					let title = svg.selectAll(".title")
-					.data(["Detail View of " + titleKey])
-
-					title.transition()
-						.duration(speed)
-						.text(d => d);
-					
-					title.enter()
-						.append("text")
-						.attr("class", "title")
-						.attr("x", 50 + (width / 2))             
-						.attr("y", 40 - (margin.top / 2))
-						.attr("text-anchor", "middle")  
-						.style("font-size", "16px") 
-						.style("text-decoration", "underline")  
-						.text(d => d);
-
-					let size = 10
-					let x_position = 570
-					let y_position = 10
-
-					if(Scale_ouput.innerHTML == "Original Scale" && key != "Score"){
-						key = key + " Score"
-					}
-
-					let legend_dots = svg.selectAll(".legend_dots")
-						.data([key])
-
-					legend_dots.transition()
-						.duration(speed)
-						.style("fill", function(d){return z(d)})
-
-					legend_dots.enter()
-						.append("rect")
-						.attr("class", "legend_dots")
-						.attr("x", x_position)
-						.attr("y", function(d,i){ return y_position + i*(size+5)})
-						.attr("stroke", "black")
-						.attr("stroke-width", "1.0")
-						.attr("width", size)
-						.attr("height", size)
-						.style("fill", function(d){ return z(d)})
-
-					let legend_labels = svg.selectAll(".legend_labels")
-						.data([titleKey])
-
-					legend_labels.transition()
-						.duration(speed)
-						//.style("fill", d => z(key))
-						.text(d => d)
-
-					legend_labels.enter()
-						.append("text")
-							.attr("class", "legend_labels")
-							.attr("x", x_position + size*1.2)
-							.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
-							//.style("fill", d => z(d))
-							.style("fill", "black")
-							.text(function(d){ return d})
-							.attr("text-anchor", "left")
-							.style("alignment-baseline", "middle")					
+				
+				titleKey = key;
+				if(titleKey == "ai"){
+					titleKey = "Artificial Intelligence"
+				} else if(titleKey == "mlmining"){
+					titleKey = "Machine Learning"
+				} else if(titleKey == "act"){
+					titleKey = "Theory"
+				} else if(titleKey == "mod") {
+					titleKey = "Database"
+				} else if(titleKey == "visualization"){
+					titleKey = "Visualization"
+				} else if(titleKey == "ai Score"){
+					titleKey = "Artificial Intelligence Score"
+				} else if(titleKey == "mlmining Score"){
+					titleKey = "Machine Learning Score"
+				} else if(titleKey == "act Score"){
+					titleKey = "Theory Score"
+				} else if(titleKey == "mod Score") {
+					titleKey = "Database Score"
+				} else if(titleKey == "visualization Score"){
+					titleKey = "Visualization Score"
 				}
+
+				let title = svg.selectAll(".title")
+				.data(["Detail View of " + titleKey])
+
+				title.transition()
+					.duration(speed)
+					.text(d => d);
+				
+				title.enter()
+					.append("text")
+					.attr("class", "title")
+					.attr("x", 50 + (width / 2))             
+					.attr("y", 40 - (margin.top / 2))
+					.attr("text-anchor", "middle")  
+					.style("font-size", "16px") 
+					.style("text-decoration", "underline")  
+					.text(d => d);
+
+				let size = 10
+				let x_position = 570
+				let y_position = 10
+
+				if(Scale_ouput.innerHTML == "Original Scale" && key != "Score"){
+					key = key + " Score"
+				}
+
+				let legend_dots = svg.selectAll(".legend_dots")
+					.data([key])
+
+				legend_dots.transition()
+					.duration(speed)
+					.style("fill", function(d){return z(d)})
+
+				legend_dots.enter()
+					.append("rect")
+					.attr("class", "legend_dots")
+					.attr("x", x_position)
+					.attr("y", function(d,i){ return y_position + i*(size+5)})
+					.attr("stroke", "black")
+					.attr("stroke-width", "1.0")
+					.attr("width", size)
+					.attr("height", size)
+					.style("fill", function(d){ return z(d)})
+
+				let legend_labels = svg.selectAll(".legend_labels")
+					.data([titleKey])
+
+				legend_labels.transition()
+					.duration(speed)
+					//.style("fill", d => z(key))
+					.text(d => d)
+
+				legend_labels.enter()
+					.append("text")
+						.attr("class", "legend_labels")
+						.attr("x", x_position + size*1.2)
+						.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
+						//.style("fill", d => z(d))
+						.style("fill", "black")
+						.text(function(d){ return d})
+						.attr("text-anchor", "left")
+						.style("alignment-baseline", "middle")					
 			}
 			barChart.update = update;			
 		}
