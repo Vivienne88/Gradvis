@@ -463,6 +463,45 @@
 						svg.selectAll(".attribute_labels").remove()
 					})
 
+				let size = 10
+				let stacked_x_position = 570
+				let stacked_y_position = 10
+
+				let stacked_legend_dots = svg.selectAll(".stacked_legend_dots")
+					.data(keys)
+
+				stacked_legend_dots.transition()
+					.duration(speed)
+					.style("fill", function(d){return z(d)})
+
+				stacked_legend_dots.enter()
+					.append("rect")
+					.attr("class", "stacked_legend_dots")
+					.attr("x", stacked_x_position)
+					.attr("y", function(d,i){ return stacked_y_position + i*(size+5)})
+					.attr("stroke", "black")
+					.attr("stroke-width", "1.0")
+					.attr("width", size)
+					.attr("height", size)
+					.style("fill", function(d){ return z(d)})
+
+				let stacked_legend_labels = svg.selectAll(".stacked_legend_labels")
+					.data(keys)
+
+				stacked_legend_labels.transition()
+					.duration(speed)
+					.text(d => d)
+
+				stacked_legend_labels.enter()
+					.append("text")
+						.attr("class", "stacked_legend_labels")
+						.attr("x", stacked_x_position + size*1.2)
+						.attr("y", function(d,i){ return stacked_y_position + i*(size+5) + (size/2)})
+						.style("fill", "black")
+						.text(function(d){ return d})
+						.attr("text-anchor", "left")
+						.style("alignment-baseline", "middle")	
+
 				// layer 관련 추가 코드
 				students_score_layer = document.getElementById("Students Score layer")
 				tuition_score_layer  = document.getElementById("Tuition($) Score layer")
@@ -721,7 +760,7 @@
 
 				let size = 10
 				let x_position = 570
-				let y_position = 10
+				let y_position = 220
 				let attribute_dots = svg.selectAll(".attribute_dots")
 					.data([key])
 
@@ -757,7 +796,7 @@
 						.style("fill", "black")
 						.text(function(d){ return d})
 						.attr("text-anchor", "left")
-						.style("alignment-baseline", "middle")	
+						.style("alignment-baseline", "middle")					
 			}
 
 			GPA_slider.oninput = function() {
