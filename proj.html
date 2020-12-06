@@ -50,6 +50,13 @@
 				font-size: 16px;
 				line-height: 20px;
 			}
+
+			.white_bg 
+			{
+				background-color: #ffffff;
+				padding: 3px; /*add this if you want a bit of space around the text*/
+			}
+
 		</style>
 	</head>
 	<nav class="navbar navbar-dark bd-navbar">
@@ -580,15 +587,20 @@
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)")
 					.on("mouseover", function(d,k){
+
+						mapChartText = (k + " Text").replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
 						mapChartKey = k.replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
-						mapChart.mapMouseenter(mapChartKey, "black", 10)
+						mapChart.mapMouseenter(mapChartKey, "lightgrey", 10)
+						mapChart.mapMouseenter2(mapChartText)
 						if (university_name_stack.length<2 ){ // 0개나 1개 선택한 경우 새로 마우스가 올라가는 text들은 bold로 보이도록 한다. (이미 bold인 녀석들은 변화가 없음)
 							d3.select(this).style("font-weight", "bold");
 						}					
 					})
 					.on("mouseout", function(d,k){
+						mapChartText = (k + " Text").replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
 						mapChartKey = k.replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
 						mapChart.mapMouseleave(mapChartKey, "red", 3)
+						mapChart.mapMouseleave2(mapChartText)
 						if (university_name_stack.length === 0){ // 하나도 스택에 안들어간상태면 나오면서 bold 해제하면 됨
 							d3.select(this).style("font-weight", "normal");
 						}
@@ -1227,14 +1239,28 @@
 			var g = svg.append("g");
 			
 			function mapMouseenter(mapChartKey, mapChartColor, mapChartCircleSize) {
-				d3.select("#"+mapChartKey)
-					.attr("r", mapChartCircleSize)
-					.style("fill", mapChartColor)
+				d3.select('#' + mapChartKey)
+					.attr('r', mapChartCircleSize)
+					.style('fill', mapChartColor)
 			}
+
 			function mapMouseleave(mapChartKey, mapChartColor, mapChartCircleSize) {
-				d3.select("#"+mapChartKey)
-					.attr("r", mapChartCircleSize)
-					.style("fill", mapChartColor)
+				d3.select('#' + mapChartKey)
+					.attr('r', mapChartCircleSize)
+					.style('fill', mapChartColor)
+			}
+
+			function mapMouseenter2(mapChartText) {
+				d3.select('#' + mapChartText)
+					.attr('font-size', '12px')
+					.style('fill', 'blue');
+			}
+
+			function mapMouseleave2(mapChartText) {
+				d3.select('#' + mapChartText)
+					.attr('class', '')
+					.attr('font-size', '5px')
+					.style('fill', 'black');
 			}
 
 			update(mapChartKey, mapChartColor, mapChartCircleSize)
@@ -1268,6 +1294,7 @@
 							.data(csv)
 							.enter()
 							.append("text") // append text
+							.attr("id", d => (d.Name + " Text").replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-'))
 							.attr("x", function(d) {
 								return projection([d.longitude, d.latitude])[0];
 							})
@@ -1278,7 +1305,7 @@
 							.transition().duration(750)
 							.style("fill", "black") // fill the text with the colour black
 							.attr("text-anchor", "middle") // set anchor y justification
-							.attr("font-size","3px")
+							.attr("font-size","5px")
 							.text(function(d) {return d.Name;}); 
 
 						g.selectAll("text")
@@ -1422,6 +1449,8 @@
 			}
 			mapChart.mapMouseleave = mapMouseleave;
 			mapChart.mapMouseenter = mapMouseenter;
+			mapChart.mapMouseleave2 = mapMouseleave2;
+			mapChart.mapMouseenter2 = mapMouseenter2;
 			mapChart.update = update;
 
             var zoom = d3.zoom()
