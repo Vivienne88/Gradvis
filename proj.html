@@ -461,6 +461,32 @@
 						svg.selectAll(".attribute_dots").remove()
 						svg.selectAll(".attribute_labels").remove()
 					})
+				
+				function transfer_key(titleKey){
+					if(titleKey == "ai"){
+						return "Artificial Intelligence"
+					} else if(titleKey == "mlmining"){
+						return "Machine Learning"
+					} else if(titleKey == "act"){
+						return "Theory"
+					} else if(titleKey == "mod") {
+						return "Database"
+					} else if(titleKey == "visualization"){
+						return "Visualization"
+					} else if(titleKey == "ai Score"){
+						return "Artificial Intelligence Score"
+					} else if(titleKey == "mlmining Score"){
+						return "Machine Learning Score"
+					} else if(titleKey == "act Score"){
+						return "Theory Score"
+					} else if(titleKey == "mod Score") {
+						return "Database Score"
+					} else if(titleKey == "visualization Score"){
+						return "Visualization Score"
+					} else {
+						return titleKey
+					}
+				}
 
 				let size = 10
 				let stacked_x_position = 570
@@ -484,8 +510,9 @@
 					.attr("height", size)
 					.style("fill", function(d){ return z(d)})
 
+				transfer_keys = keys.map(d => transfer_key(d))
 				let stacked_legend_labels = svg.selectAll(".stacked_legend_labels")
-					.data(keys)
+					.data(transfer_keys)
 
 				stacked_legend_labels.transition()
 					.duration(speed)
