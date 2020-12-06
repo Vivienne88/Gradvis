@@ -1270,7 +1270,7 @@
 			function mapMouseleave2(mapChartText) {
 				d3.select('#' + mapChartText)
 					.attr('class', '')
-					.attr('font-size', '5px')
+					.attr('font-size', '3px')
 					.style('fill', 'black');
 			}
 
@@ -1316,7 +1316,7 @@
 							.transition().duration(750)
 							.style("fill", "black") // fill the text with the colour black
 							.attr("text-anchor", "middle") // set anchor y justification
-							.attr("font-size","5px")
+							.attr("font-size","3px")
 							.text(function(d) {return d.Name;}); 
 
 						g.selectAll("text")
