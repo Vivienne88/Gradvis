@@ -779,6 +779,8 @@
 			}
 
 			function update_selectedAttribute(key, speed){
+				var checkedBoxes = document.querySelectorAll('input[name=attributes]:checked');
+
 				titleKey = key;
 				if(titleKey == "ai"){
 					titleKey = "Artificial Intelligence"
@@ -804,13 +806,14 @@
 
 				let size = 10
 				let x_position = 570
-				let y_position = 220
+				let y_position = (checkedBoxes.length * 15) + 20
 				let attribute_dots = svg.selectAll(".attribute_dots")
 					.data([key])
 
 				attribute_dots.transition()
 					.duration(speed)
 					.style("fill", function(d){return z(d)})
+					.attr("y", function(d,i){ return y_position + i*(size+5)})
 
 				attribute_dots.enter()
 					.append("rect")
