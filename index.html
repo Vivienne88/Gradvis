@@ -1,0 +1,1901 @@
+<html>
+	<head>
+		<meta charset ="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+		<script src="https://d3js.org/d3.v6.min.js"></script>
+
+		<link rel="stylesheet" href="navbar-fixed-left.min.css">		
+		<link type="text/css" rel="stylesheet" href="map_source/d3map.css" />
+		<script src="https://unpkg.com/topojson@3"></script>
+		<style>
+
+			body {
+				font: 14px arial;
+			}
+
+			.bd-navbar {
+				background-color: #563d7c;
+				box-shadow: 0 0.5rem 1rem rgba(0,0,0,.05), inset 0 -1px 0 rgba(0,0,0,.1);
+			}
+
+			svg {
+				font: 12px arial;
+			}
+
+			#tooltip {
+				position: absolute;
+						height: auto;
+				padding:10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+				box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+				pointer-events: none;
+			}
+
+			#tooltip.hidden {
+				display: none;
+			}
+
+			#tooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			}
+
+			.white_bg 
+			{
+				background-color: #ffffff;
+				padding: 3px; /*add this if you want a bit of space around the text*/
+			}
+
+		</style>
+	</head>
+	<nav class="navbar navbar-dark bd-navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand">Graduate School Visualization</a>
+			</div>
+			<a  href="http://127.0.0.1:5500/faq.html" class="navbar-brand">FAQ</a> <!-- faq 부분 -->
+		</div>
+	</nav>
+	<body>
+		<nav class="navbar navbar-expand-md navbar-dark fixed-left">
+			<div>
+				<h6 class="mt-3">Filters</h6>
+				<div>
+					GPA : <span id="GPA_value">No Filter</span>
+					<div>
+						<input type="range" min="0" max="36" value="0" class="slider" id="myGPA">
+					</div>
+				</div>
+				<div>
+					TOEFL : <span id="TOEFL_value">No Filter</span>
+					<div>
+						<input type="range" min="0" max="105" value="0" class="slider" id="myTOEFL">
+					</div>
+				</div>
+				<div>
+					GRE : <span id="GRE_value">No Filter</span>
+					<div>
+						<input type="range" min="0" max="1" value="0" class="slider" id="myGRE">
+					</div>
+				</div>
+				<div>
+					Rank : <span id="Rank_value">No Filter</span>
+					<div>
+						<input type="range" min="0" max="50" value="0" class="slider" id="myRank">
+					</div>
+				</div>
+				<h6 class="mt-3">Attributes</h6>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Students" name="attributes" value="Students" checked="true">
+						Students
+					</label>							
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Tuition($)" name="attributes" value="Tuition($)" checked="true">
+						Tuition($)
+					</label>	
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Score" name="attributes" value="Score" checked="true">
+						Score	
+					</label>	
+				</div>	
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Student/Faculty Ratio" name="attributes" value="Student/Faculty Ratio" checked="true">
+						Student/Faculty Ratio
+					</label>							
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Master Acceptance" name="attributes" value="Master Acceptance" checked="true">
+						Master Acceptance
+					</label>	
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Master Applicants" name="attributes" value="Master Applicants" checked="true">
+						Master Applicants
+					</label>	
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Phd Acceptance" name="attributes" value="Phd Acceptance" checked="true">
+						Phd Acceptance
+					</label>							
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Phd Applicants" name="attributes" value="Phd Applicants" checked="true">
+						Phd Applicants
+					</label>	
+				</div>
+				<!-- <div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Artificial intelligence" name="attributes" value="ai" checked="true">
+						Artificial Intelligence
+					</label>							
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Machine learning & data mining" name="attributes" value="mlmining" checked="true">
+						Machine Learning
+					</label>	
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Theory" name="attributes" value="act" checked="true">
+						Theory
+					</label>	
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Databases" name="attributes" value="mod" checked="true">
+						Databases
+					</label>							
+				</div>
+				<div>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="Visualization" name="attributes" value="visualization" checked="true">
+						Visualization
+					</label>	
+				</div> -->
+				<h6 class="mt-3">Sort</h6>
+				<div>
+					Sort : <span id="Sort_value">Sort by Name</span>
+					<div>
+						<input type="range" min="0" max="2" value="0" class="slider" id="mySort">
+					</div>
+				</div>
+				<h6 class="mt-3">Scale</h6>
+				<div>
+					Scale : <span id="Scale_value">Scale by 100</span>
+					<div>
+						<input type="range" min="0" max="1" value="0" class="slider" id="myScale">
+					</div>
+				</div>		
+			</div>
+		</nav>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<svg id="chart" width="730" height="800"></svg>
+					<svg id="barChart" width="730" height="800"></svg>	
+					<svg id="mapChart" width="690" height="387"></svg>
+					<svg id="spiderChart" width="770", height="387"></svg>
+				</div>
+			</div>
+		</div>
+
+		<!-- Select year: 
+		<select id="year" class="form-control input-sm">			
+		</select> -->
+
+		<script>
+
+		/*
+		var zoom = d3.zoom()
+  		.on("zoom", zoomed);
+
+		let s = d3.select("#container_fluid").call(zoom)
+		// trigger tha initial zoom with an initial transform.
+		s.call(zoom.transform,d3.zoomIdentity.scale(20).translate(-100,-100));
+		function zoomed() {
+			g.attr("transform",d3.event.transform);
+		}
+		*/
+
+		GPA_slider = document.getElementById("myGPA")
+		GPA_ouput = document.getElementById("GPA_value")
+
+		TOEFL_slider = document.getElementById("myTOEFL")
+		TOEFL_ouput = document.getElementById("TOEFL_value")
+
+		GRE_slider = document.getElementById("myGRE")
+		GRE_ouput = document.getElementById("GRE_value")
+
+		Rank_slider = document.getElementById("myRank")
+		Rank_ouput = document.getElementById("Rank_value")
+
+		Sort_slider = document.getElementById("mySort")
+		Sort_ouput = document.getElementById("Sort_value")
+
+		Scale_slider = document.getElementById("myScale")
+		Scale_ouput = document.getElementById("Scale_value")
+
+		attributes = document.querySelectorAll('input[name=attributes]')
+
+		let barChartKey = "Score";
+		let mapChartKey;
+		let mapChartColor;
+		let mapChartCircleSize;
+		let tmp_color;
+		let sort_color = '#000000';
+		let mapTransform = {x: 0, y: 0};
+
+		// spider chart 용 stack
+		let university_name_stack = new Array;
+		let obj = new Array(2);
+
+		// layer 변수들 추가
+		let students_score_layer;
+		let tuition_score_layer;
+		let score_layer;
+		let student_faculty_score_layer;
+		let master_acceptance_score_layer;
+		let master_applicants_score_layer;
+		let phd_acceptance_score_layer;
+		let phd_applicants_score_layer;
+		let ai_score_layer; 
+		let mlmining_score_layer;
+		let act_score_layer;
+		let mod_score_layer;
+		let visualization_score_layer;
+
+		d3.csv("uni3.csv").then(d => chart(d))
+
+		function chart(csv) {
+			var keys = ['Students Score', 'Tuition($) Score', 'Score', 'Student/Faculty Ratio Score', 'Master Acceptance Score'
+			, 'Master Applicants Score', 'Phd Acceptance Score', 'Phd Applicants Score', 'ai Score', 'mlmining Score'
+			, 'act Score', 'mod Score', 'visualization Score']
+			
+			var names = [...new Set(csv.map(d => d.Name))]
+
+			var svg = d3.select("#chart"),
+				margin = {top: 35, left: 80, bottom: 120, right: 50},
+				width = +svg.attr("width") - margin.left - margin.right,
+				height = +svg.attr("height") - margin.top - margin.bottom;
+
+			svg.on("click", function(d){
+				if (d.target.id === "chart") {
+					console.log(university_name_stack.length);
+					let len = university_name_stack.length;
+					for (let i = 0; i < len; i++){
+						university_name_stack.pop();
+						if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+						spiderChart.spiderChartRemove();
+						}
+					}
+				}
+			});
+
+			svg.append("text")
+				.attr("x", 50 + (width / 2))             
+				.attr("y", 40 - (margin.top / 2))
+				.attr("text-anchor", "middle")  
+				.style("font-size", "16px") 
+				.style("text-decoration", "underline")  
+				.text("Total Score of Attributes");
+
+			var x = d3.scaleBand()
+				.range([margin.left, width - margin.right])
+				.padding(0.1)
+
+			var y = d3.scaleLinear()
+				.rangeRound([height - margin.bottom, margin.top])
+
+			var xAxis = svg.append("g")
+				.attr("transform", `translate(0,${height - margin.bottom})`)
+				.attr("class", "x-axis")
+				
+			var yAxis = svg.append("g")
+				.attr("transform", `translate(${margin.left},0)`)
+				.attr("class", "y-axis")
+
+			// var z = d3.scaleOrdinal()
+    		// 	.range(d3.schemeCategory10)
+			// 	.domain(keys);
+
+			var z = d3.scaleOrdinal()
+				//.range(["steelblue", "darkorange", "lightblue"])
+				.range(["#eb002f", "#faee00", "#000000", "#ff66ae", "#7a7f75", "#8a1b00", "#1ac700", "#0029fa", "#ffffff", "#33f9ff", "#ff8533", "#85008a", "lightblue"])
+				.domain(keys);
+
+			update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 0)
+
+			function update(GPA, TOEFL, GRE, rank, sort, speed) {
+				var checkedBoxes = document.querySelectorAll('input[name=attributes]:checked');
+				
+				keys = []
+				checkedBoxes.forEach(function(d){
+					if(d.value == "Score"){
+						keys.push(d.value)
+					} else {
+						keys.push(d.value + " Score")
+					}
+				})
+
+				GPA = GPA / 10
+				var data = null
+
+				if(GRE == 0 && rank == 0){
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL)
+				} else if (GRE == 0 && rank != 0) {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.Rank <= rank)
+				} else if (GRE != 0 && rank == 0) {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required")
+				} else {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required" && f.Rank <= rank)
+				}
+					
+				data.forEach(function(d) {
+					d["Students"] = +d["Students"]
+					d["Tuition($)"] = +d["Tuition($)"]
+					d["Rank"] = +d["Rank"]
+					d["GPA"] = +d["GPA"]
+					d["TOEFL"] = +d["TOEFL"]
+
+					d["Students Score"] = +d["Students Score"]
+					d["Tuition($) Score"] = +d["Tuition($) Score"]
+					d["Student/Faculty Ratio Score"] = +d["Student/Faculty Ratio Score"]
+					d["Master Acceptance Score"] = +d["Master Acceptance Score"]
+					d["Master Applicants Score"] = +d["Master Applicants Score"]
+					d["Phd Acceptance Score"] = +d["Phd Acceptance Score"]
+					d["Phd Applicants Score"] = +d["Phd Applicants Score"]
+
+					d["act Score"] = +d["act Score"]
+					d["ai Score"] = +d["ai Score"]
+					d["arch Score"] = +d["arch Score"]
+					d["bio Score"] = +d["bio Score"]
+					d["chi Score"] = +d["chi Score"]
+
+					d["comm Score"] = +d["comm Score"]
+					d["crypt Score"] = +d["crypt Score"]
+					d["da Score"] = +d["da Score"]
+					d["ecom Score"] = +d["ecom Score"]
+					d["graph Score"] = +d["graph Score"]
+
+					d["hpc Score"] = +d["hpc Score"]
+					d["ir Score"] = +d["ir Score"]
+					d["log Score"] = +d["log Score"]
+					d["metrics Score"] = +d["metrics Score"]
+					d["mlmining Score"] = +d["mlmining Score"]
+
+					d["mobile Score"] = +d["mobile Score"]
+					d["mod Score"] = +d["mod Score"]
+					d["nlp Score"] = +d["nlp Score"]
+					d["ops Score"] = +d["ops Score"]
+					d["plan Score"] = +d["plan Score"]
+
+					d["robotics Score"] = +d["robotics Score"]
+					d["sec Score"] = +d["sec Score"]
+					d["soft Score"] = +d["soft Score"]
+					d["vision Score"] = +d["vision Score"]
+					d["visualization Score"] = +d["visualization Score"]
+					d["bed Score"] = +d["bed Score"]
+																
+					d.total = Math.trunc(d3.sum(keys, k => +(d[k])))
+					return d
+				})
+
+				y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]).nice();
+
+				svg.selectAll(".y-axis").transition().duration(speed)
+					.call(d3.axisLeft(y).ticks(null, "s"))
+
+				if(sort == 0){
+					data.sort((a, b) => names.indexOf(a.Name) - names.indexOf(b.Name))
+				} else if(sort == 1){
+					data.sort((a, b) => b.total - a.total)
+				} else if(sort == 2){
+					data.sort((a, b) => a.total - b.total)
+				}
+
+				x.domain(data.map(d => d.Name));
+
+				svg.selectAll(".x-axis").transition().duration(speed)
+					.call(d3.axisBottom(x).tickSizeOuter(0))
+
+				var group = svg.selectAll("g.layer")
+					.data(d3.stack().keys(keys)(data), d => d.key)
+
+				group.exit().remove()
+
+				group.enter().append("g")
+					.attr("id", d => d.key+" layer") // 추가 부분
+					.classed("layer", true)
+					.attr("fill", d => z(d.key));
+				
+				d3.selectAll("g.layer")
+					.on('mouseenter', function(e, k) {
+						tmp_color = this.getAttribute('fill')
+
+						layer = this.getAttribute('id')
+						tmp_stroke = "black"
+						if(layer == "Score layer"){
+							tmp_stroke = "white"
+						}
+
+						group = d3.select(this)._groups[0]
+						childs = group[0].childNodes;
+						for(i=0; i<childs.length; i++){
+							childs[i].setAttribute("stroke", tmp_stroke)
+							childs[i].setAttribute("stroke-width", "1.5")
+						}
+
+						key = layer.slice(0, -6)
+						update_selectedAttribute(key, 10);
+					})
+					.on('mousedown', function(){
+						sort_color = tmp_color;
+					})
+					.on('mouseleave', function(e, k) {
+						d3.select(this)
+							.attr('fill', tmp_color)
+
+						group = d3.select(this)._groups[0]
+						childs = group[0].childNodes;
+						for(i=0; i<childs.length; i++){
+							childs[i].setAttribute("stroke", "black")
+							childs[i].setAttribute("stroke-width", "0.1")
+						}
+
+						svg.selectAll(".attribute_dots").remove()
+						svg.selectAll(".attribute_labels").remove()
+					})
+				
+				function transfer_key(titleKey){
+					if(titleKey == "ai"){
+						return "Artificial Intelligence"
+					} else if(titleKey == "mlmining"){
+						return "Machine Learning"
+					} else if(titleKey == "act"){
+						return "Theory"
+					} else if(titleKey == "mod") {
+						return "Database"
+					} else if(titleKey == "visualization"){
+						return "Visualization"
+					} else if(titleKey == "ai Score"){
+						return "Artificial Intelligence Score"
+					} else if(titleKey == "mlmining Score"){
+						return "Machine Learning Score"
+					} else if(titleKey == "act Score"){
+						return "Theory Score"
+					} else if(titleKey == "mod Score") {
+						return "Database Score"
+					} else if(titleKey == "visualization Score"){
+						return "Visualization Score"
+					} else {
+						return titleKey
+					}
+				}
+
+				let size = 10
+				let stacked_x_position = 570
+				let stacked_y_position = 10
+
+				let stacked_legend_dots = svg.selectAll(".stacked_legend_dots")
+					.data(keys)
+
+				stacked_legend_dots.transition()
+					.duration(speed)
+					.style("fill", function(d){return z(d)})
+
+				stacked_legend_dots.enter()
+					.append("rect")
+					.attr("class", "stacked_legend_dots")
+					.attr("x", stacked_x_position)
+					.attr("y", function(d,i){ return stacked_y_position + i*(size+5)})
+					.attr("stroke", "black")
+					.attr("stroke-width", "1.0")
+					.attr("width", size)
+					.attr("height", size)
+					.style("fill", function(d){ return z(d)})
+
+				stacked_legend_dots.exit()
+					.remove()
+
+				transfer_keys = keys.map(d => transfer_key(d))
+				let stacked_legend_labels = svg.selectAll(".stacked_legend_labels")
+					.data(transfer_keys)
+
+				stacked_legend_labels.transition()
+					.duration(speed)
+					.text(d => d)
+
+				stacked_legend_labels.enter()
+					.append("text")
+						.attr("class", "stacked_legend_labels")
+						.attr("x", stacked_x_position + size*1.2)
+						.attr("y", function(d,i){ return stacked_y_position + i*(size+5) + (size/2)})
+						.style("fill", "black")
+						.text(function(d){ return d})
+						.attr("text-anchor", "left")
+						.style("alignment-baseline", "middle")	
+
+				stacked_legend_labels.exit()
+					.remove()
+
+				// layer 관련 추가 코드
+				students_score_layer = document.getElementById("Students Score layer")
+				tuition_score_layer  = document.getElementById("Tuition($) Score layer")
+				score_layer = document.getElementById("Score layer")
+				student_faculty_score_layer  = document.getElementById("Student/Faculty Ratio Score layer")
+				master_acceptance_score_layer  = document.getElementById("Master Acceptance Score layer")
+				master_applicants_score_layer  = document.getElementById("Master Applicants Score layer")
+				phd_acceptance_score_layer  = document.getElementById("Phd Acceptance Score layer")
+				phd_applicants_score_layer = document.getElementById("Phd Applicants Score layer")
+				ai_score_layer = document.getElementById("ai Score layer")
+				mlmining_score_layer = document.getElementById("mlmining Score layer")
+				act_score_layer = document.getElementById("act Score layer")
+				mod_score_layer = document.getElementById("mod Score layer")
+				visualization_score_layer = document.getElementById("visualization Score layer")
+
+				var bars = svg.selectAll("g.layer").selectAll("rect")
+					.data(d => d, e => e.data.Name);
+
+				bars.exit().remove()
+
+				bars.enter().append("rect")
+					.merge(bars)
+					.attr("width", x.bandwidth())
+				.transition().duration(speed)
+					.attr("x", d => x(d.data.Name))
+					.attr("y", d => y(d[1]))
+					.attr("height", d => y(d[0]) - y(d[1]))
+					.attr('stroke', 'black')
+					.attr('stroke-width', '0.1');
+
+				var text = svg.selectAll(".text")
+					.data(data, d => d.Name);
+
+				text.exit().remove()
+
+				text.enter().append("text")
+					.attr("class", "text")
+					.attr("text-anchor", "middle")
+					.merge(text)
+				.transition().duration(speed)
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", d => `translate(${x(d.Name) + x.bandwidth() / 1.9}, ${y(d.total) - 30}) rotate(270)`)
+					.text(d => d.total)		
+					
+				xAxis.selectAll("text")	
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-65)")
+					.on("mouseover", function(d,k){
+
+						mapChartText = (k + " Text").replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
+						mapChartKey = k.replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
+						mapChart.mapMouseenter(mapChartKey, "lightgrey", 10)
+						mapChart.mapMouseenter2(mapChartText)
+						if (university_name_stack.length<2 ){ // 0개나 1개 선택한 경우 새로 마우스가 올라가는 text들은 bold로 보이도록 한다. (이미 bold인 녀석들은 변화가 없음)
+							d3.select(this).style("font-weight", "bold");
+						}					
+					})
+					.on("mouseout", function(d,k){
+						mapChartText = (k + " Text").replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
+						mapChartKey = k.replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-')
+						mapChart.mapMouseleave(mapChartKey, "red", 3)
+						mapChart.mapMouseleave2(mapChartText)
+						if (university_name_stack.length === 0){ // 하나도 스택에 안들어간상태면 나오면서 bold 해제하면 됨
+							d3.select(this).style("font-weight", "normal");
+						}
+						else if (university_name_stack.length === 1){ // 스택에 하나 들어가있는상태면, 그 내용물인거만 bold유지하고 나머지는 normal로.
+							if ((k!==university_name_stack[0]) && (k!==university_name_stack[1])){
+								d3.select(this).style("font-weight", "normal");
+							}
+						}
+						else { // 스택에 두개 들어간상태면 아무것도 안함.
+						}
+					})
+					.on("click", function(d,k){
+						if (university_name_stack.length===0){ //하나도 선택되어있지 않은경우 클릭시
+							university_name_stack[0] = k;
+							console.log(university_name_stack);
+							obj[0]=d3.select(this);
+							console.log(obj);
+						}
+						else if (university_name_stack.length === 1){ // 하나 선택되어 있는 경우 클릭시
+							if (university_name_stack[0] === k){ // 그것이 이미 선택되어 bold처리된 대학이라면
+								console.log("selected school 1 eliminated");
+								university_name_stack.pop();
+								obj.pop();
+								console.log(obj);
+							}
+							else{ // 선택안된 대학을 선택했을 경우
+								university_name_stack[1] = k;
+								console.log(university_name_stack);
+								obj[1] = d3.select(this);
+								console.log(obj);
+								spiderChart.update(university_name_stack[0], university_name_stack[1], ["red", "green"]);
+							}
+						}
+						else { // 두 개 선택되어 있는 경우 클릭 시
+							if (university_name_stack[0] === k){
+								console.log("selected school 1 eliminated");
+								university_name_stack[0] = university_name_stack[1];
+								university_name_stack.pop();
+								obj[0] = obj[1];
+								obj.pop();
+								console.log(obj);
+							}
+							else if (university_name_stack[1] === k){
+								console.log("selected school 2 eliminated");
+								university_name_stack.pop();
+								obj.pop();
+								console.log(obj);
+							}
+						}
+					});
+				if (students_score_layer !== null) {
+					students_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+						//students_score_layer.onclick = null;
+					}
+				} 
+				if (tuition_score_layer !== null) {
+					tuition_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+						//students_score_layer.onclick = null;
+					}
+				}	
+				if (score_layer !== null) {
+					score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (student_faculty_score_layer !== null) {
+					student_faculty_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (master_acceptance_score_layer !== null) {
+					master_acceptance_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (master_applicants_score_layer !== null) {
+					master_applicants_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (phd_acceptance_score_layer !== null) {
+					phd_acceptance_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (phd_applicants_score_layer !== null) {
+					phd_applicants_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (ai_score_layer !== null) {
+					ai_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (mlmining_score_layer !== null) {
+					mlmining_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (act_score_layer !== null) {
+					act_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (mod_score_layer !== null) {
+					mod_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+				if (visualization_score_layer !== null) {
+					visualization_score_layer.onclick = function() {
+						barChartKey = this.id
+						barChartKey = barChartKey.slice(0, -6)
+						barChartColor = this.getAttribute('fill')
+						
+						barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+					}
+				}
+			}
+
+			function update_selectedAttribute(key, speed){
+				var checkedBoxes = document.querySelectorAll('input[name=attributes]:checked');
+
+				titleKey = key;
+				if(titleKey == "ai"){
+					titleKey = "Artificial Intelligence"
+				} else if(titleKey == "mlmining"){
+					titleKey = "Machine Learning"
+				} else if(titleKey == "act"){
+					titleKey = "Theory"
+				} else if(titleKey == "mod") {
+					titleKey = "Database"
+				} else if(titleKey == "visualization"){
+					titleKey = "Visualization"
+				} else if(titleKey == "ai Score"){
+					titleKey = "Artificial Intelligence Score"
+				} else if(titleKey == "mlmining Score"){
+					titleKey = "Machine Learning Score"
+				} else if(titleKey == "act Score"){
+					titleKey = "Theory Score"
+				} else if(titleKey == "mod Score") {
+					titleKey = "Database Score"
+				} else if(titleKey == "visualization Score"){
+					titleKey = "Visualization Score"
+				}
+
+				let size = 10
+				let x_position = 570
+				let y_position = (checkedBoxes.length * 15) + 20
+				let attribute_dots = svg.selectAll(".attribute_dots")
+					.data([key])
+
+				attribute_dots.transition()
+					.duration(speed)
+					.style("fill", function(d){return z(d)})
+					.attr("y", function(d,i){ return y_position + i*(size+5)})
+
+				attribute_dots.enter()
+					.append("rect")
+					.attr("class", "attribute_dots")
+					.attr("x", x_position)
+					.attr("y", function(d,i){ return y_position + i*(size+5)})
+					.attr("stroke", "black")
+					.attr("stroke-width", "1.0")
+					.attr("width", size)
+					.attr("height", size)
+					.style("fill", function(d){ return z(d)})
+
+				let attribute_labels = svg.selectAll(".attribute_labels")
+					.data([titleKey])
+
+				attribute_labels.transition()
+					.duration(speed)
+					//.style("fill", d => z(d))
+					.text(d => d)
+
+				attribute_labels
+					.enter()
+					.append("text")
+						.attr("class", "attribute_labels")
+						.attr("x", x_position + size*1.2)
+						.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
+						//.style("fill", d => z(d))
+						.style("fill", "black")
+						.text(function(d){ return d})
+						.attr("text-anchor", "left")
+						.style("alignment-baseline", "middle")					
+			}
+
+			GPA_slider.oninput = function() {
+				if(this.value == 0){
+					GPA_ouput.innerHTML = "No Filter";
+				} else {
+					GPA_ouput.innerHTML = this.value / 10;
+				}
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
+			}
+
+			TOEFL_slider.oninput = function() {
+				if(this.value == 0){
+					TOEFL_ouput.innerHTML = "No Filter";	
+				} else {
+					TOEFL_ouput.innerHTML = this.value;
+				}				
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
+			}			
+
+			GRE_slider.oninput = function() {
+				if(this.value == 0){
+					GRE_ouput.innerHTML = "No Filter";
+				} else {
+					GRE_ouput.innerHTML = "Required";
+				}
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
+			}	
+
+			Rank_slider.oninput = function() {
+				if(this.value == 0){
+					Rank_ouput.innerHTML = "No Filter";
+				} else {
+					Rank_ouput.innerHTML = "TOP " + this.value;
+				}
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				let len = university_name_stack.length;
+				for (let i = 0; i < len; i++){
+					university_name_stack.pop();
+					if (typeof obj[i] !== 'undefined'){
+						obj[i].style("font-weight", "normal");
+						console.log("obj " + i + " is eliminated.");
+					}
+				}
+				spiderChart.spiderChartRemove();
+			}	
+
+			Sort_slider.oninput = function() {
+				console.log()
+				if(this.value == 0){
+					Sort_ouput.innerHTML = "Sort by Name";
+				} else if(this.value == 1) {
+					Sort_ouput.innerHTML = "Descending Sort";
+				} else {
+					Sort_ouput.innerHTML = "Ascending Sort";
+				}
+				update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+			}	
+
+			Scale_slider.oninput = function() {
+				if(this.value == 0){
+					Scale_ouput.innerHTML = "Scale by 100";
+				} else {
+					Scale_ouput.innerHTML = "Original Scale";
+				}
+				barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+			}	
+
+			attributes.forEach(function(DOM){
+				DOM.onchange = function() {
+					update(GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, 750)
+					barChart.update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 750)
+				}
+			})
+		}
+
+		d3.csv("uni3.csv").then(d => barChart(d));
+		
+		function barChart(csv) 
+		{
+			csv.forEach(function(d) {
+				d["Students"] = +d["Students"].replace(',', '')
+				d["Tuition($)"] = +d["Tuition($)"].replace(',', '')
+				d["Rank"] = +d["Rank"]
+				d["GPA"] = +d["GPA"]
+				d["TOEFL"] = +d["TOEFL"]
+				d["Score"] = +d["Score"]
+				d["Student/Faculty Ratio"] = +d["Student/Faculty Ratio"]
+				d["Master Acceptance"] = +d["Master Acceptance"]
+				d["Master Applicants"] = +d["Master Applicants"]
+				d["Phd Acceptance"] = +d["Phd Acceptance"]
+				d["Phd Applicants"] = +d["Phd Applicants"]
+				d["act"] = +d["act"]
+				d["ai"] = +d["ai"]
+				d["arch"] = +d["arch"]
+				d["bio"] = +d["bio"]
+				d["chi"] = +d["chi"]
+				d["comm"] = +d["comm"]
+				d["crypt"] = +d["crypt"]
+				d["da"] = +d["da"]
+				d["ecom"] = +d["ecom"]
+				d["graph"] = +d["graph"]
+				d["hpc"] = +d["hpc"]
+				d["ir"] = +d["ir"]
+				d["log"] = +d["log"]
+				d["metrics"] = +d["metrics"]
+				d["mlmining"] = +d["mlmining"]
+				d["mobile"] = +d["mobile"]
+				d["mod"] = +d["mod"]
+				d["nlp"] = +d["nlp"]
+				d["ops"] = +d["ops"]
+				d["plan"] = +d["plan"]
+				d["robotics"] = +d["robotics"]
+				d["sec"] = +d["sec"]
+				d["soft"] = +d["soft"]
+				d["vision"] = +d["vision"]
+				d["visualization"] = +d["visualization"]
+				d["bed"] = +d["bed"]
+
+				d["Students Score"] = +d["Students Score"]
+				d["Tuition($) Score"] = +d["Tuition($) Score"]
+				d["Student/Faculty Ratio Score"] =+d["Student/Faculty Ratio Score"]
+				d["Master Acceptance Score"] = +d["Master Acceptance Score"]
+				d["Master Applicants Score"] = +d["Master Applicants Score"]
+				d["Phd Acceptance Score"] = +d["Phd Acceptance Score"]
+				d["Phd Applicants Score"] = +d["Phd Applicants Score"]
+				d["act Score"] = +d["act Score"]
+				d["ai Score"] = +d["ai Score"]
+				d["arch Score"] = +d["arch Score"]
+				d["bio Score"] = +d["bio Score"]
+				d["chi Score"] = +d["chi Score"]
+				d["comm Score"] = +d["comm Score"]
+				d["crypt Score"] = +d["crypt Score"]
+				d["da Score"] = +d["da Score"]
+				d["ecom Score"] = +d["ecom Score"]
+				d["graph Score"] = +d["graph Score"]
+				d["hpc Score"] = +d["hpc Score"]
+				d["ir Score"] = +d["ir Score"]
+				d["log Score"] = +d["log Score"]
+				d["metrics Score"] = +d["metrics Score"]
+				d["mlmining Score"] = +d["mlmining Score"]
+				d["mobile Score"] = +d["mobile Score"]
+				d["mod Score"] = +d["mod Score"]
+				d["nlp Score"] = +d["nlp Score"]
+				d["ops Score"] = +d["ops Score"]
+				d["plan Score"] = +d["plan Score"]
+				d["robotics Score"] = +d["robotics Score"]
+				d["sec Score"] = +d["sec Score"]
+				d["soft Score"] = +d["soft Score"]
+				d["vision Score"] = +d["vision Score"]
+				d["visualization Score"] = +d["visualization Score"]
+				d["bed Score"] = +d["bed Score"]
+															
+				return d
+			})
+			let names = [...new Set(csv.map(d => d.Name))]
+			
+			let svg = d3.select("#barChart"),
+				margin = {top: 35, left: 80, bottom: 120, right: 50},
+				width = +svg.attr("width") - margin.left - margin.right,
+				height = +svg.attr("height") - margin.top - margin.bottom;
+
+			let x = d3.scaleBand()
+				.range([margin.left, width - margin.right])
+				.padding(0.1)
+			
+			var y = d3.scaleLinear()
+				.rangeRound([height - margin.bottom, margin.top]);
+
+			var xAxis = svg.append("g")
+				.attr("transform", `translate(0,${height - margin.bottom})`)
+				.attr("class", "x-axis")
+
+			var yAxis = svg.append("g")
+				.attr("transform", `translate(${margin.left},0)`)
+				.attr("class", "y-axis")
+
+			var keys = ['Students Score', 'Tuition($) Score', 'Score', 'Student/Faculty Ratio Score', 'Master Acceptance Score'
+				, 'Master Applicants Score', 'Phd Acceptance Score', 'Phd Applicants Score', 'ai Score', 'mlmining Score'
+				, 'act Score', 'mod Score', 'visualization Score']
+
+			// var z = d3.scaleOrdinal()
+    		// 	.range(d3.schemeCategory10)
+			// 	.domain(keys);
+
+			var z = d3.scaleOrdinal()
+				//.range(["steelblue", "darkorange", "lightblue"])
+				.range(["#eb002f", "#faee00", "#000000", "#ff66ae", "#7a7f75", "#8a1b00", "#1ac700", "#0029fa", "#ffffff", "#33f9ff", "#ff8533", "#85008a", "lightblue"])
+				.domain(keys);
+
+			update(barChartKey, sort_color, GPA_slider.value, TOEFL_slider.value, GRE_slider.value, Rank_slider.value, Sort_slider.value, Scale_slider.value, 0);
+			function update(key, color, GPA, TOEFL, GRE, rank, sort, scale, speed) {
+				console.log(scale)
+				if(scale == 1 && key.includes(" Score")){
+					console.log(key)
+					key = key.slice(0, key.length - " Score".length)
+					console.log(key)
+				}
+
+				GPA = GPA / 10
+				var data = null
+
+				if(GRE == 0 && rank == 0){
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL)
+				} else if (GRE == 0 && rank != 0) {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.Rank <= rank)
+				} else if (GRE != 0 && rank == 0) {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required")
+				} else {
+					var data = csv.filter(f => f.GPA >= GPA && f.TOEFL >= TOEFL && f.GRE == "Required" && f.Rank <= rank)
+				}
+
+				if(sort == 0){
+					data.sort((a, b) => names.indexOf(a.Name) - names.indexOf(b.Name))
+				} else if(sort == 1){
+					data.sort((a, b) => b[key] - a[key])
+				} else if(sort == 2){
+					data.sort((a, b) => a[key] - b[key])
+				}
+				
+				console.log(data)
+
+				y.domain([0, d3.max(data, d => d[key])]).nice() // score 컬럼에서 max가 88이 나옴
+				//console.log(d3.max(data, d => d[key]))
+
+				svg.selectAll(".y-axis").transition().duration(speed)
+					.call(d3.axisLeft(y).ticks(null, "s"))
+
+				x.domain(data.map(d => d.Name))
+
+				svg.selectAll(".x-axis").transition().duration(speed)
+					.call(d3.axisBottom(x).tickSizeOuter(0))
+
+				let bar = svg.selectAll(".bar")
+					.data(data, d => d.Name)
+
+				bar.exit().remove();
+				
+				console.log(key)
+				bar.enter().append("rect")
+					.attr("class", "bar")
+					.attr("fill", color)
+					.attr("stroke", color == "#000000" ? "white" : "black")
+					.attr("stroke-width", color == "#000000" ? "0.5" : "1.0")
+					.merge(bar)
+					.attr("width", x.bandwidth())
+				.transition().duration(speed)
+					.attr("x", d => x(d.Name))
+					.attr("y", d => y(d[key]))
+					.attr("height", d => y(0) - y(d[key]))
+					.attr("fill", color)
+					.attr("stroke", color == "#000000" ? "white" : "black")
+					.attr("stroke-width", color == "#000000" ? "0.5" : "1.0")
+
+				xAxis.selectAll("text")	
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-65)");		
+
+				
+				titleKey = key;
+				if(titleKey == "ai"){
+					titleKey = "Artificial Intelligence"
+				} else if(titleKey == "mlmining"){
+					titleKey = "Machine Learning"
+				} else if(titleKey == "act"){
+					titleKey = "Theory"
+				} else if(titleKey == "mod") {
+					titleKey = "Database"
+				} else if(titleKey == "visualization"){
+					titleKey = "Visualization"
+				} else if(titleKey == "ai Score"){
+					titleKey = "Artificial Intelligence Score"
+				} else if(titleKey == "mlmining Score"){
+					titleKey = "Machine Learning Score"
+				} else if(titleKey == "act Score"){
+					titleKey = "Theory Score"
+				} else if(titleKey == "mod Score") {
+					titleKey = "Database Score"
+				} else if(titleKey == "visualization Score"){
+					titleKey = "Visualization Score"
+				}
+
+				let title = svg.selectAll(".title")
+				.data(["Detailed View of " + titleKey])
+
+				title.transition()
+					.duration(speed)
+					.text(d => d);
+				
+				title.enter()
+					.append("text")
+					.attr("class", "title")
+					.attr("x", 50 + (width / 2))             
+					.attr("y", 40 - (margin.top / 2))
+					.attr("text-anchor", "middle")  
+					.style("font-size", "16px") 
+					.style("text-decoration", "underline")  
+					.text(d => d);
+
+				let size = 10
+				let x_position = 570
+				let y_position = 10
+
+				if(Scale_ouput.innerHTML == "Original Scale" && key != "Score"){
+					key = key + " Score"
+				}
+
+				let legend_dots = svg.selectAll(".legend_dots")
+					.data([key])
+
+				legend_dots.transition()
+					.duration(speed)
+					.style("fill", function(d){return z(d)})
+
+				legend_dots.enter()
+					.append("rect")
+					.attr("class", "legend_dots")
+					.attr("x", x_position)
+					.attr("y", function(d,i){ return y_position + i*(size+5)})
+					.attr("stroke", "black")
+					.attr("stroke-width", "1.0")
+					.attr("width", size)
+					.attr("height", size)
+					.style("fill", function(d){ return z(d)})
+
+				let legend_labels = svg.selectAll(".legend_labels")
+					.data([titleKey])
+
+				legend_labels.transition()
+					.duration(speed)
+					//.style("fill", d => z(key))
+					.text(d => d)
+
+				legend_labels.enter()
+					.append("text")
+						.attr("class", "legend_labels")
+						.attr("x", x_position + size*1.2)
+						.attr("y", function(d,i){ return y_position + i*(size+5) + (size/2)})
+						//.style("fill", d => z(d))
+						.style("fill", "black")
+						.text(function(d){ return d})
+						.attr("text-anchor", "left")
+						.style("alignment-baseline", "middle")					
+			}
+			barChart.update = update;			
+		}
+
+		/*
+			map chart
+		*/
+		d3.csv("uni3.csv").then(d => mapChart(d));
+		function mapChart(csv)
+        {
+            var width = 650,
+                height = 400;
+
+            var projection = d3.geoMercator()
+                .center([100, 35])
+                .scale(600)
+                .rotate([-180,0]);
+
+            var svg = d3.select("#mapChart").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            var path = d3.geoPath()
+                .projection(projection);
+
+			var g = svg.append("g");
+			
+			function mapMouseenter(mapChartKey, mapChartColor, mapChartCircleSize) {
+				d3.select('#' + mapChartKey)
+					.attr('r', mapChartCircleSize)
+					.style('fill', mapChartColor)
+			}
+
+			function mapMouseleave(mapChartKey, mapChartColor, mapChartCircleSize) {
+				d3.select('#' + mapChartKey)
+					.attr('r', mapChartCircleSize)
+					.style('fill', mapChartColor)
+			}
+
+			function mapMouseenter2(mapChartText) {
+				d3.select('#' + mapChartText)
+					.attr('font-size', '12px')
+					.style('fill', 'blue');
+			}
+
+			function mapMouseleave2(mapChartText) {
+				d3.select('#' + mapChartText)
+					.attr('class', '')
+					.attr('font-size', '3px')
+					.style('fill', 'black');
+			}
+
+			update(mapChartKey, mapChartColor, mapChartCircleSize)
+			function update(mapChartKey, mapChartColor, mapChartCircleSize) {
+				// load and display the World
+				d3.json("map_source/world-110m2.json").then(function(topology) {
+					g.selectAll("path")
+						.data(topojson.feature(topology, topology.objects.countries).features)
+						.enter().append("path")
+						.attr("stroke", 'white')
+						.attr('stroke-width', '0.25px')
+						.attr("fill", 'grey')
+						.attr("d", path);
+
+						g.selectAll("circle")
+							.data(csv)
+							.enter()
+							.append("circle")
+							.attr("cx", function(d) {
+								return projection([d.longitude, d.latitude])[0];
+							})
+							.attr("cy", function(d) {
+								return projection([d.longitude, d.latitude])[1];
+							})
+							.text(function(d) { return d.Name } )
+							.attr("r", 3)
+							.style("fill", "red")
+							.attr("id", d => (d.Name).replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-'))
+
+						g.selectAll("text")
+							.data(csv)
+							.enter()
+							.append("text") // append text
+							.attr("id", d => (d.Name + " Text").replace(/\ /g, '-').replace(/\(/g, '-').replace(/\)/g, '-').replace(/\&/g, '-').replace(/\,/g, '-').replace(/\./g, '-'))
+							.attr("x", function(d) {
+								return projection([d.longitude, d.latitude])[0];
+							})
+							.attr("y", function(d) {
+								return projection([d.longitude, d.latitude])[1];
+							})
+							.attr("dy", 0) // set y position of bottom of text
+							.transition().duration(750)
+							.style("fill", "black") // fill the text with the colour black
+							.attr("text-anchor", "middle") // set anchor y justification
+							.attr("font-size","3px")
+							.text(function(d) {return d.Name;}); 
+
+						g.selectAll("text")
+							.on('mouseover', function() {
+								d3.select(this)
+									.attr('font-size', '12px')
+									.style("fill", "blue");
+
+								let infoWidth = 390;
+								let infoHeight = 270;
+								
+								let xMaps = csv.map(csv => projection([csv.longitude, csv.latitude])[0])
+								let yMaps = csv.map(csv => projection([csv.longitude, csv.latitude])[1])
+
+								textDatas = []
+								for (let i=0; i<xMaps.length; i++) {
+									if ((+this.x.baseVal[0].value).toPrecision(4) == (+xMaps[i]).toPrecision(4)) {
+										textDatas.push(
+											csv[i]["Name"],
+											csv[i]["GPA"],
+											csv[i]["GRE"],
+											csv[i]["Master Acceptance"],
+											csv[i]["Master Applicants"],
+											csv[i]["Phd Acceptance"],
+											csv[i]["Phd Applicants"],
+											csv[i]["Rank"],
+											csv[i]["Score"],
+											csv[i]["Student/Faculty Ratio"],
+											csv[i]["Students"],
+											csv[i]["TOEFL"],
+											csv[i]["Tuition($)"],
+											xMaps[i],
+											yMaps[i]
+										)
+										break;
+									}
+								}
+								let xBase = textDatas[13]
+								let yBase = textDatas[14]							
+
+								g.append('filter')
+									.attr('id', 'mapShadow')
+									.append('feDropShadow')
+									.attr('flood-opacity', 0.8)
+									.attr('dx', 1)
+									.attr('dy', 1)
+									.attr('stdDeviation', 3);
+								
+								g.append("rect")
+									.attr("id", "mapDetailView")
+									.attr("x", xBase - infoWidth/2 + mapTransform.x)
+									.attr("y", yBase - infoHeight - 10 + mapTransform.y)
+									.attr("width", infoWidth)
+									.attr("height", infoHeight)
+									.attr("fill","white")
+									.attr('filter', 'url(#mapShadow)');
+
+								let xTextBase = xBase - infoWidth/2 + 10 + mapTransform.x;
+								let yTextBase = yBase - infoHeight + 10 + mapTransform.y;
+								let stepSize = 20;
+
+								g.append("text")
+									.attr("id", "mapdetailText")
+									.attr("x", xTextBase)
+									.attr("y", yTextBase)
+									.attr("font-size", "12px")
+									.attr("font-family", "sans-serif")
+									
+									.append("tspan")
+									.text("Name: " + textDatas[0])	
+									.append("tspan")
+									.text(function(){
+									let showGPA = textDatas[1];
+										if (textDatas[1] == 0) {
+											showGPA = "None";
+										}
+										return "GPA : " + showGPA;
+									})
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + stepSize)
+									.append("tspan")
+									.text("GRE: " + textDatas[2])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 2*stepSize)
+									.append("tspan")
+									.text("Master Acceptance: " + textDatas[3] + "%")
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 3*stepSize)
+									.append("tspan")
+									.text("Master Applicants: " + textDatas[4])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 4*stepSize)
+									.append("tspan")
+									.text("Phd Acceptance: " + textDatas[5] + "%")
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 5*stepSize)
+									.append("tspan")
+									.text("Phd Applicants: " + textDatas[6])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 6*stepSize)
+									.append("tspan")
+									.text("Rank: " + textDatas[7])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 7*stepSize)
+									.append("tspan")
+									.text("Score: " + textDatas[8])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 8*stepSize)
+									.append("tspan")
+									.text(function(){return "Student/Faculty Ratio : " + textDatas[9] + " : 1"})
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 9*stepSize)
+									.append("tspan")
+									.text("Students: " + textDatas[10])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 10*stepSize)
+									.append("tspan")
+									.text("TOEFL: " + textDatas[11])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 11*stepSize)
+									.append("tspan")
+									.text("Tuition($): " + textDatas[12])
+									.attr("x", xTextBase)
+									.attr("y", yTextBase + 12*stepSize)								
+							})
+							.on('mouseleave', function() {
+								d3.select(this)
+									.attr("dy", 0)
+									.style("fill", "black")
+									.attr("font-size","3px")
+									.attr('stroke-width', '0.1')
+									.text(function(d) {return d.Name;});
+
+								d3.select(this).attr('fill', 'black');
+								//d3.selectAll('#mapDetailView').style("opacity", 0);
+								//d3.selectAll('#mapDetailText').style("opacity", 0);
+								d3.selectAll('#mapDetailView').remove();
+								d3.selectAll('#mapDetailText').remove();
+							})
+				});
+			}
+			mapChart.mapMouseleave = mapMouseleave;
+			mapChart.mapMouseenter = mapMouseenter;
+			mapChart.mapMouseleave2 = mapMouseleave2;
+			mapChart.mapMouseenter2 = mapMouseenter2;
+			mapChart.update = update;
+
+            var zoom = d3.zoom()
+                .scaleExtent([1, 8])
+                .on('zoom', function(event, d) {
+                    g.selectAll('path')
+                    .attr('transform', event.transform);
+                    g.selectAll("circle")
+                    .attr('transform', event.transform);
+                    g.selectAll("text")
+                    .attr('transform', event.transform);
+					g.selectAll("rect")
+                    .attr('transform', event.transform);
+					mapTransform = {x: event.transform.x, y: event.transform.y}
+            });
+            svg.call(zoom);
+        }
+
+		d3.csv("uni3.csv").then(d => spiderChart(d));
+		
+		function spiderChart(csv){
+
+			var svg = d3.select("#spiderChart")
+				.style("background", "white");
+
+			let margin= {l: 60, r: 30, t: 30, b: 60 };
+			let keys = ["GPA", "TOEFL", "Master Acceptance", "Phd Acceptance", "Score", "Student/Faculty Ratio", "Tuition($)"];
+
+			const width =903, height = 387;
+  			const sideLength = height * .5 - 40; // 그래프 전체크기를 결정
+			const sides = keys.length; // 7
+			const borderDistance = sideLength / 6;
+			const baseX = width * 0.25, baseY = height * 0.5; // 그래프 시작위치 결정
+			//const schools = CONSTANTS().schools;
+			const hexBinary = hex => parseInt(hex, 16)
+			const hexToRGBA = (hex, opacity=1) => {	
+			hex = hex[0] === "#" ? hex.slice(1) : hex;
+				return "rgb(" + hexBinary(hex[0] + hex[1]) + "," + hexBinary(hex[2] + hex[3]) + "," + hexBinary(hex[4] + hex[5]) + "," + opacity + ")"};
+
+			const degToRadians = angle => angle * Math.PI / 180;
+			const coordX = (angle, rad, base) => Math.cos(degToRadians(angle)).toFixed(2) * rad + base;
+			const coordY = (angle, rad, base) => Math.sin(degToRadians(angle)).toFixed(2) * rad + base;
+			const pathToPoint = (i1, rad1, i2, rad2, start=false) => (
+				`${start ? "L" : "M"}` + `${coordX(i1*360/sides, rad1, baseX)},${coordY(i1*360/sides, rad1, baseY)}` +
+				`L${coordX(i2*360/sides, rad2, baseX)},${coordY(i2*360/sides, rad2, baseY)}` );
+
+			let paths = [...Array(6)].map((b, x) => {
+				const rad = (x+1) * borderDistance;
+					return pathToPoint(0, rad, 1, rad) + ([...Array(sides-1)].map((e, i) => pathToPoint(i+1, rad, i+2, rad, true))).join("") + " Z";
+				});
+
+
+			// 선택된 school 각각의 feature값 중 표시하고자 하는 feature의 값만 추출. 첫번째 인자로 학교명 배열, 2번째 인자로 첫번째 인자 학교명을 가지는 데이터 배열을 전달.
+			function data (schools, showData) {
+				
+				let result = schools.map(e => keys.map(c => [])); // showData에서 필요한 feature들의 '값' 만 추출한 배열
+  				showData.forEach((dat, i) => {
+					const schoolIndex = schools.indexOf(dat.Name);
+					// showData가 가지는 각 학교들의 feature들의 'key' 를 순회 (prop이 Name, Rank, GPA, TOEFL... 등등의 값임)
+    					Object.keys(dat).forEach(prop => {
+      						const keyIndex = keys.indexOf(prop); // 실제 showData에서 우리가 표시하고싶은 feature의 index 위치. -1이면 없는 feature이다.
+      						if (keyIndex !== -1){
+							let percentageIndex = dat[prop].indexOf("%", 0);
+							if (percentageIndex !== -1){ // % 기호가 존재한다는 의미
+								result[schoolIndex][keyIndex].push(parseFloat(dat[prop]));
+							}
+							else{
+								if (dat[prop].indexOf(".", 0) != -1){ // 소수점 존재할시
+									result[schoolIndex][keyIndex].push(parseFloat(dat[prop]));
+								}
+								else{	
+        								result[schoolIndex][keyIndex].push(parseInt(dat[prop]));
+								}
+							}
+						}
+    					});
+ 				});
+				return result;
+			}				
+
+			// Scaling function. feature 6개 각각에 대해 현재 data에 들어있는 학교들이 가지는 값들을 동일한 비율로 스케일링하는 함수이다.
+			function scalesFunc (range, schools, showData) {
+  				let scales = {};
+  				keys.forEach((key, i) => {
+				let vv = data(schools, showData).map(school=>school[i]);
+				let maxVal = 0.0;
+				for(let i=0; i<vv.length; i++){
+					if (vv[i][0]>maxVal){
+						maxVal = vv[i][0];
+					}
+				}
+  					scales[key] = d3.scaleLinear()
+ 						.domain([0, maxVal])
+    						.range([0, range]);
+				});
+	 			return scales;
+			}
+
+			// 내부 격자 다각형
+			let blocks = svg.selectAll("g.block").data(Array(6))
+				.enter().append("g")
+				.classed("block", true)
+				.append("path")
+				.attr("d", (d, i) => paths[i])
+				.style("stroke", "rgba(0,0,0,0.4)")
+				.style("fill", (d, i) => i ? "transparent" : "rgba(219,219,205,0.2)");
+
+			// 내부 격자 직선
+				let diagonal = svg.append("g").classed("diagonal", true);
+				keys.forEach((e, i) => {
+				diagonal.append("path")
+				.attr("d", pathToPoint(i, 0, i, sideLength))
+				.style("stroke", "rgba(0,0,0,0.4)");
+				});
+
+				d3.select('body')
+				.append('div')
+				.attr('id', 'tooltip')
+				.attr('style', 'position: absolute; opacity: 0;');
+		
+				let cc = 1;
+				// Draw Axes (7각형의 사이드에 붙은 label로, update하지않고 상시유지하되 mouseevent는 update때마다 출력하는 결과가 달라져야함)
+				svg.selectAll("g.axes")
+				.data(keys).enter().append("g")
+				.classed("axes", true)
+				.attr("transform", (d, i) => (
+				`translate(` + `${coordX(i*360/sides, sideLength+10, baseX)},` + `${coordY(i*360/sides, sideLength+10, baseY)})`))
+    				.append("text")
+     				.text(d => d)
+      				.attr("transform", (d, i) => `rotate(${(i*360/sides)+90})`)
+      				.style("font-size", "0.9rem")
+      				.attr("text-anchor", "middle")
+				.on("mouseover", function(d){
+					console.log("dd");
+				});
+				/*
+   				.on("click", function(d){
+					if (cc === 1){
+						update("Stanford University",null, ["red"]);
+						cc= cc+1;
+					}
+					else{
+						update("California Institute of Technology", "Cornell University", ["blue", "white"]);
+						cc = cc -1;
+					}
+				});*/
+
+			// Draw Labels (우하단)
+				let tmpSchool = ["university2 (not selected)", "university1 (not selected)"];
+				var labels = svg.selectAll("g.labels")
+				.data(tmpSchool).enter().append("g")
+				.classed("labels", true)
+				.attr("transform", (d, i) => (`translate(${width * 0.5}, ${height - margin.b - (i*20)})`))
+
+				// Content of labels
+				labels.append("rect")
+				.attr("x", -30).attr("y", function(d,i){ return i*(-10); })
+				.attr("width", 25).attr("height", 10)
+				.style("fill", (d, i) => d3.rgb("black"));
+
+				labels.append("text")
+				.attr("x", 8).attr("y", function(d,i){ return i*(-10) +9; })
+				.style("font-size", "0.7rem")
+				.text(d=>d);
+
+			update();
+
+			function update(schoolName1, schoolName2, colors, keyset){
+				let selectedSchool = new Array(2);
+				let showData = new Array(2);
+				if ((typeof schoolName1 !== 'undefined')&&(typeof schoolName2 !== 'undefined')){ // 학교명이 2개주어졌을때
+					selectedSchool[0] = schoolName1;
+					selectedSchool[1] = schoolName2;
+					let cnt = 0;
+					for (let i=0; i<csv.length; i++){
+						if (csv[i].Name ==selectedSchool[0] || csv[i].Name == selectedSchool[1]){
+							showData[cnt] = csv[i];
+							cnt = cnt + 1;
+						}
+					}
+				}
+				else if (typeof schoolName2 !== 'undefined'){ // 학교명이 1개주어졌을때
+					selectedSchool[0] = schoolName1;
+					for (let i=0; i<csv.length; i++){
+						if (csv[i].Name ==selectedSchool[0]){
+							showData[0] = csv[i];
+						}
+					}
+				}
+				else{
+					console.log ("If this message occurred by your function calling, error is occurred - spider chart's update function needs at least one parameter.");
+					return;
+				}
+
+				if (typeof keyset !== 'undefined'){
+				let CompareKeys = ["GPA", "TOEFL", "Master Acceptance", "Phd Acceptance", "Score", "Student/Faculty Ratio", "Tuition($)"];
+				let realKeys = [];
+				for (let i = 0; i < keyset.length; i++){
+					if (CompareKeys.includes(keyset[i])){
+						realKeys.push(keyset[i]);
+					}
+				}
+				console.log(realKeys);
+					// 새로 바꾸게 되는 key의 validation check
+					if (realKeys.length >= 3){
+						keys = realKeys;
+					}
+				}
+				console.log(keys);
+
+				const scales = scalesFunc(sideLength, selectedSchool, showData);
+
+				// Draw Spider Charts (스파이더차트 본체를 그리는곳으로, 선색상 및 채우기색상을 결정하고 그림을 그린다. Transition duration 넣어볼것.)
+				svg.selectAll("g.spiders").remove();
+  				svg.selectAll("g.spiders")
+				.data(selectedSchool).enter().append("g")
+				.classed("spiders", true)
+				.append("path")
+				.style("fill", (d,i)=>d3.rgb(0,0,0,0.0))
+				.style("stroke", (d, i) => d3.rgb(colors[i]))
+				.style("stroke-width", "3px")
+				.attr("d", (d,i)=>(keys.map((key, x) => {
+						let radiusFrom = scales[key](0),
+							radiusTo = scales[keys[(x+1)%sides]](0);
+						let k= pathToPoint(x, radiusFrom, x+1, radiusTo, x !== 0);
+						return k;
+        					}).join("") + ' Z'
+      				))
+				.transition().duration(1500)
+				.attr("d", (d, i) => (
+					keys.map((key, x) => {
+						let radiusFrom = scales[key](data(selectedSchool, showData)[i][x]),
+							radiusTo = scales[keys[(x+1)%sides]](data(selectedSchool, showData)[i][(x+1)%sides]);
+						let k= pathToPoint(x, radiusFrom, x+1, radiusTo, x !== 0);
+						return k;
+        					}).join("") + ' Z'
+      				))
+
+				d3.select('body')
+				.append('div')
+				.attr('id', 'tooltip')
+				.attr('style', 'position: absolute; opacity: 0;');
+		
+
+				// Draw Axes (7각형의 사이드에 붙은 label로, update하지않고 상시유지하되 mouseevent는 update때마다 출력하는 결과가 달라져야함)
+				svg.selectAll("g.axes")
+   				.on('mouseover', function(d,k){
+					d3.select(this).attr('fill', 'blue');
+					let c_name = showData.map(function(dat){return dat['Name'];});
+					let c_value = showData.map(function(dat) { 
+						console.log(dat[k]);
+						if (dat[k] == 0){
+							return "None";
+						}
+						else{
+							return dat[k];
+						}
+					 });
+					let c_text = c_name[1] + " : " + c_value[1] + ", " + c_name[0] + " : " + c_value[0];
+					d3.select('#tooltip').style('opacity', 1).text(c_text);
+
+   				})
+  				.on('mouseout', function(d){
+					d3.select(this).attr('fill', 'black');
+					d3.select('#tooltip').style('opacity', 0);	
+				})
+   				.on('mousemove', function(d) {
+					d3.select('#tooltip')
+					.style('left', (d.pageX+10) + 'px')
+					.style('top', (d.pageY+10) + 'px')
+   				});
+
+				// Draw Labels (우하단)
+				svg.selectAll("g.labels").remove();
+				labels = svg.selectAll("g.labels")
+				.data(selectedSchool).enter().append("g")
+				.classed("labels", true)
+				.attr("transform", (d, i) => (`translate(${width * 0.5}, ${height - margin.b - (i*20)})`))
+
+				// Content of labels
+				labels.append("rect")
+				.attr("x", -30).attr("y", function(d,i){ return i*(-10); })
+				.attr("width", 25).attr("height", 10)
+				.style("fill", (d, i) => d3.rgb(colors[i]));
+
+				let univNameLen;
+				labels.append("text")
+				.attr("x", 8).attr("y", function(d,i){ return i*(-10) +9; })
+				.style("font-size", "0.7rem")
+				.text(function(d){ 
+					/*
+					univNameLen = d.length;
+					console.log(univNameLen);
+					if (univNameLen >= 30){
+						cutStr = d.substring(0, 40);
+						console.log(cutStr);
+						cutStr = cutStr + "...";
+						return cutStr;
+					}
+					else{ return d; }
+					*/
+					return d;
+				})
+				.on('mouseover', function(d,k){
+					d3.select(this).attr('fill', 'red');
+					for (let i=0; i<showData.length; i++){
+						if (showData[i].Name === k){
+							svg.append('filter')
+							.attr('id', 'shadow')
+  		 					.append('feDropShadow')
+  		 					.attr('flood-opacity', 0.8)
+  		 					.attr('dx', 1)
+  		 					.attr('dy', 1)
+  							.attr('stdDeviation', 3);
+
+							svg.append("rect")
+							.attr("id", "detailView")
+							.attr("x", 420)
+							.attr("y", 20)
+							.attr("width", 250)
+							.attr("height", 250)
+							.attr("fill","white")
+							.attr('filter', 'url(#shadow)');
+	
+							let showName = "";
+							console.log(showData[i]["Name"].length);
+							if (showData[i]["Name"].length >= 30){
+								showName = showData[i]["Name"].substring(0, 30);
+								showName = showName + "...";
+							}
+							else{
+								showName = showData[i]["Name"];
+							}
+							let tex = svg.append("text")
+								.attr("id", "detailText")
+								.attr("x", 430)
+								.attr("y", 30)
+								.attr("font-size", "13px")
+								.attr("font-family", "sans-serif")
+								.append("tspan")
+								.text(function(){return "Name : " + showName})
+								.attr("x", 430)
+								.attr("y", 40)
+								.append("tspan")
+								.text(function(){
+									let showGPA=showData[i]["GPA"];
+									if (showData[i]["GPA"] == 0) {
+										showGPA = "None";
+									}
+								return "GPA : " + showGPA;
+								})
+								.attr("x", 430)
+								.attr("y", 58)
+								.append("tspan")
+								.text(function(){return "GRE : " + showData[i]["GRE"]})
+								.attr("x", 430)
+								.attr("y", 76)
+								.append("tspan")
+								.text(function(){return "Master Acceptance : " + showData[i]["Master Acceptance"] + "%"})
+								.attr("x", 430)
+								.attr("y", 94)
+								.append("tspan")
+								.text(function(){return "Master Applicants : " + showData[i]["Master Applicants"]})
+								.attr("x", 430)
+								.attr("y", 112)
+								.append("tspan")
+								.text(function(){return "Phd Acceptance : " + showData[i]["Phd Acceptance"] + "%"})
+								.attr("x", 430)
+								.attr("y", 130)
+								.append("tspan")
+								.text(function(){return "Phd Applicants : " + showData[i]["Phd Applicants"]})
+								.attr("x", 430)
+								.attr("y", 148)
+								.append("tspan")
+								.text(function(){return "Rank : " + showData[i]["Rank"]})
+								.attr("x", 430)
+								.attr("y", 166)
+								.append("tspan")
+								.text(function(){return "Score : " + showData[i]["Score"]})
+								.attr("x", 430)
+								.attr("y", 184)
+								.append("tspan")
+								.text(function(){return "Student/Faculty Ratio : " + showData[i]["Student/Faculty Ratio"] + " : 1"})
+								.attr("x", 430)
+								.attr("y", 202)
+								.append("tspan")
+								.text(function(){return "Students : " + showData[i]["Students"]})
+								.attr("x", 430)
+								.attr("y", 220)
+								.append("tspan")
+								.text(function(){return "TOEFL : " + showData[i]["TOEFL"]})
+								.attr("x", 430)
+								.attr("y", 238)
+								.append("tspan")
+								.text(function(){return "Tuition($) : " + showData[i]["Tuition($)"]})
+								.attr("x", 430)
+								.attr("y", 256)
+			
+  						}
+					}
+				})
+			.on('mouseout', function(d){
+				d3.select(this).attr('fill', 'black');
+				d3.selectAll('#detailView').style("opacity", 0);
+				d3.selectAll('#detailText').style("opacity", 0);
+			});
+
+			}
+			spiderChart.update = update;
+			function spiderChartRemove(){
+				svg.selectAll("g.spiders").remove();
+				svg.selectAll("g.labels").remove();
+				var labels = svg.selectAll("g.labels")
+				.data(tmpSchool).enter().append("g")
+				.classed("labels", true)
+				.attr("transform", (d, i) => (`translate(${width * 0.5}, ${height - margin.b - (i*20)})`))
+
+
+				// Content of labels
+				labels.append("rect")
+				.attr("x", -30).attr("y", function(d,i){ return i*(-10); })
+				.attr("width", 25).attr("height", 10)
+				.style("fill", (d, i) => d3.rgb("black"));
+
+				labels.append("text")
+				.attr("x", 8).attr("y", function(d,i){ return i*(-10) +9; })
+				.style("font-size", "0.7rem")
+				.text(d=>d);
+			}
+			spiderChart.spiderChartRemove = spiderChartRemove;
+			
+				
+		}
+		</script>
+	</body>
+</html> 
