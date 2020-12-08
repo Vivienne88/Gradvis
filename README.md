@@ -39,7 +39,9 @@ Longitudes : Longitudes of graduate school locations
 Current project requires python3 as installation. \
 Follow the prompt after installation of python3. 
 ```
-git clone https://github.com/Vivienne88/Gradvis.git
+git clone https://github.com/Vivienne88/Gradvis.git gradviz
+cd gradviz
 pip install httpserver
 python -m http.server
 ```
+After seting up the server go to localhost:8000/proj.html
