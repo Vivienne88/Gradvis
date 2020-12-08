@@ -6,7 +6,7 @@ The project objective is to visualize gradute school information in a compact fo
 Stacked Bar Chart : Visualizes summary of all attributes \
 Bar Chart : Visualizes a single attribute \
 Map Chart : Visualizes school locations via map \
-Spider Chart : Visualizes two schools with six attributes for comparison \
+Spider Chart : Visualizes two schools with six attributes for comparison
 
 # Attributes
 Data is based on U.S News Rankings site except for latitudes and longtidues. \
@@ -33,7 +33,7 @@ Master Applicants Score : Master Applicants normalized to 0 - 100 \
 Phd Acceptance : Phd Acceptance normalized to 0 - 100 \
 Phd Applicants : Phd Applicants normalized to 0 - 100 \
 Latitudes : Latitudes of graduate school locations \
-Longitudes : Longitudes of graduate school locations \
+Longitudes : Longitudes of graduate school locations
 
 # Quick Start
 Current project requires python3 as installation. \
