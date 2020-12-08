@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css" />
+
+    <!--<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>-->
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    
+    	
+
+    <style>
+        body {
+			font: 14px arial;
+		}
+        .bd-navbar {
+			background-color: #563d7c;
+			box-shadow: 0 0.5rem 1rem rgba(0,0,0,.05), inset 0 -1px 0 rgba(0,0,0,.1);
+		}
+        .white_bg {
+			background-color: #ffffff;
+			padding: 3px; /*add this if you want a bit of space around the text*/
+		}
+        .navbar-brand {
+            position: absolute;  
+            margin: auto; 
+            font-size: 20px;
+            top: 0;
+            bottom: 0;
+            left: 31px;
+            right: 0;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bd-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a  class="navbar-brand">Graduate School Project : FAQ</a>
+            </div>
+        </div>
+    </nav>
+
+<!-- Bootstrap FAQ - START -->
+<div class="container">
+    <br />
+    <br />
+    <br />
+
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        This section contains a wealth of information, related to <strong>gradvis</strong>. If you cannot find an answer to your question, 
+        make sure to contact us. 
+    </div>
+
+    <br />
+
+    <div class="panel-group" id="accordion">
+        <div class="faqHeader">자주 묻는 질문</div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">정보 출처가 신뢰성 있는 소스인지 궁금합니다.</a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse">
+                <div class="panel-body">
+                    데이터는 usnews의 C.E 기준 포스팅 1위 - 50위권 학교를 사용했습니다.<br>
+                    출처 링크: https://premium.usnews.com/best-graduate-schools/top-engineering-schools/computer-engineering-rankings<br>
+                    Students, Tuition, Score, Student/Faculty Ratio, Master Acceptance, Master Applicants, Phd Acceptance, Phd Applicants도 위의 링크에서 가져왔습니다.<br>
+                    Tution에서 N/A(Not Available)인 학교가 5개 정도 있었는데, 해당 부분만 별도 구글링해서 채워넣었습니다.<br>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">각 attribute가 무슨 의미인지 잘 모르겠습니다.</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    각 attribute의 뜻은 다음과 같습니다.
+                    <ul>
+                        <li><strong>Students</strong> : 학생 수</li>
+                        <li><strong>Tuition</strong> : $ 달러 기준의 학비</li>
+                        <li><strong>Score</strong>: U.S News 기준으로 선정된 학교 점수 Themes</li>
+                        <li><strong>Student/Faculty Ratio</strong> : 학생/ 교수 비</li>
+                        <li><strong>Master Acceptance</strong> : 석사 합격률</li>
+                        <li><strong>Master Applicants</strong> : 석사 지원자의 수</li>
+                        <li><strong>Phd Acceptance</strong> : 박사 합격률</li>
+                        <li><strong>Phd Applicants</strong> : 박사 지원자의 수</li>
+                    </ul>
+                    <br>
+
+                    위의 이름에 Score가 포함된 부분은, Min-Max Scaling 사용했습니다. <br>
+                    즉, 0부터 100점을 가지도록 데이터를 변형하였습니다.
+                    <ul>
+                        <li><strong>Students Score</strong> : 학생이 제일 적은 학교는 0점, 학생이 가장 많은 학교는 100점</li>
+                        <li><strong>Tuition Score</strong> : 학비가 제일 높은 학교는 0점, 학비가 가장 적은 학교는 100점</li>
+                        <li><strong>Master Acceptance Score</strong> : 석사 합격률이 낮은 학교는 0점, 석사 합격률이 높은 학교는 100점</li>
+                        <li><strong>Master Applicants Score</strong> : 석사 지원자수가 낮은 학교는 0점, 석사 지원자수가 높은 학교는 100점</li>
+                        <li><strong>Phd Acceptance Score</strong> : 박사 합격률이 낮은 학교는 0점, 박사합격률이 높은 학교는 100점</li>
+                        <li><strong>Phd Applicants Score</strong> : 박사 지원자의 수가 낮은 학교는 0점, 박사 지원수가 높은 학교는 100점</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Ranking을 기준으로 보는 방법을 모르겠습니다.</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                    Ranking을 기준으로 보려면, Filters의 Rank를 활용하시면 됩니다.<br>
+                    Attribute는 선택된 Ranking 내에서, 사용자가 원하는 기준으로 다시 랭킹을 세운다고 보시면 됩니다.<br>
+                    예) Filters - Rank TOP 10, Students, Master Acceptance 체크<br>
+                    랭킹 10위권 안에서, 학생 정원이 많고 + 석사 합격률이 높은 순서대로 Ranking이 다시 매겨집니다.<br>
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">내용이 CS와 CE 내용이 섞여있는 것 같습니다.</a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+                <div class="panel-body">
+                    CS, CE 내용이 혼합된 내용 확인했습니다. <br>
+                    저희는 CE 내용을 위주로 보여주도록 수정했습니다.
+                </div>
+            </div>
+        </div>
+        <div class="faqHeader">그 밖에 질문</div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">앞으로의 업데이트 방향이 궁금합니다.</a>
+                </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse">
+                <div class="panel-body">
+                    저희는 CE에 중점을 두고 했기 때문에 CS의 정보도 추가할 계획입니다. <br>
+                    또한, CS, CE를 넘어 다른 전공의 정보도 시각화할 예정입니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .faqHeader {
+        font-size: 27px;
+        margin: 20px;
+    }
+
+    .panel-heading [data-toggle="collapse"]:after {
+        font-family: 'Glyphicons Halflings';
+        content: "\e072"; /* "play" icon */
+        float: right;
+        color: #F58723;
+        font-size: 18px;
+        line-height: 22px;
+        /* rotate "play" icon from > (right arrow) to down arrow */
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+    }
+
+    .panel-heading [data-toggle="collapse"].collapsed:after {
+        /* rotate "play" icon from > (right arrow) to ^ (up arrow) */
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+        color: #454444;
+    }
+</style>
+
+<!-- Bootstrap FAQ - END -->
+
+</div>
+
+</body>
+</html>
