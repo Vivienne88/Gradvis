@@ -6,7 +6,7 @@ The project objective is to visualize gradute school information in a compact fo
 Stacked Bar Chart : Visualizes summary of all attributes \
 Bar Chart : Visualizes a single attribute \
 Map Chart : Visualizes school locations via map \
-Spider Chart : Visualizes two schools with six attributes for comparison
+Spider Chart : Visualizes two schools with seven attributes for comparison
 
 # Attributes
 Data is based on U.S News Rankings site except for latitudes and longtidues. \
