@@ -44,4 +44,4 @@ cd gradviz
 pip install httpserver
 python -m http.server
 ```
-After seting up the server go to localhost:8000/proj.html
+After seting up the web server go to localhost:8000/proj.html
