@@ -41,7 +41,6 @@ Follow the prompt after installation of python3.
 ```
 git clone https://github.com/Vivienne88/Gradvis.git gradvis
 cd gradvis
-pip install httpserver
 python -m http.server
 ```
 After seting up the web server go to localhost:8000/proj.html
